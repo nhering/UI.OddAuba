@@ -1,0 +1,36 @@
+{
+   "version": "0.2.0",
+   "configurations": [
+      {
+         "name": "OddAuba",
+         "type": "coreclr",
+         "request": "launch",
+         "preLaunchTask": "build-oddauba",
+         "program": "${workspaceFolder}/OddAuba/bin/Debug/net6.0/OddAuba.dll",
+         "args": [],
+         "cwd": "${workspaceFolder}/OddAuba",
+         "console": "internalConsole",
+         "stopAtEntry": false
+      },
+      {
+         "name": "TradeStation",
+         "type": "coreclr",
+         "request": "launch",
+         "preLaunchTask": "build-tradestation",
+         "program": "${workspaceFolder}/TradeStation/bin/Debug/net6.0/TradeStation.dll",
+         "args": [],
+         "cwd": "${workspaceFolder}/TradeStation",
+         "stopAtEntry": false,
+         "serverReadyAction": {
+            "action": "openExternally",
+            "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
+         },
+         "env": {
+            "ASPNETCORE_ENVIRONMENT": "Development"
+         },
+         "sourceFileMap": {
+            "/Views": "${workspaceFolder}/Views"
+         }
+      }
+   ]
+}
