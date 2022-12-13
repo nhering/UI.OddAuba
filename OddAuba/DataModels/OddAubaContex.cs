@@ -9,12 +9,12 @@ namespace DataModels
       public DbSet<Order> Order { get; set; }
       public DbSet<Pool> Pool { get; set; }
       public DbSet<ReferencePoint> ReferencePoint { get; set; }
-      public DbSet<Stock> Stock { get; set; }
+      // public DbSet<Stock> Stock { get; set; }
       public DbSet<WashRule> WashRule { get; set; }
 
       private string _fileName { get; set; }
 
-      public OddAubaContex(string file = "LocalDb.db")
+      public OddAubaContex(string file = "OddAubaDb.db")
       {
          _fileName = file;
          this.Account = this.Set<Account>();
@@ -22,7 +22,7 @@ namespace DataModels
          this.Order = this.Set<Order>();
          this.Pool = this.Set<Pool>();
          this.ReferencePoint = this.Set<ReferencePoint>();
-         this.Stock = this.Set<Stock>();
+         // this.Stock = this.Set<Stock>();
          this.WashRule = this.Set<WashRule>();
       }
 

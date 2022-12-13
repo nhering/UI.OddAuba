@@ -5,8 +5,9 @@ using System.Linq;
 using System.Text;
 using OddAuba;
 using DataModels;
+using TradeStation;
 
-OddAubaContex db = new("../TradeStation/TradeStationDb.db");
+TradeStationContex db = new("../TradeStation/TradeStationDb.db");
 
 #region Consume historic stock data
 
@@ -19,14 +20,14 @@ OddAubaContex db = new("../TradeStation/TradeStationDb.db");
 
 // // Data sourced from: https://stooq.com/db/h/
 // var dir = Directory.GetCurrentDirectory();
-// var files = Directory.EnumerateFiles("RawData/nyse_daily");
+// var files = Directory.EnumerateFiles("../RawData/nyse_daily");
 // int countOfStockStates = 0;
 // int savePoint = 0;
 
 // DateTime cutoff = new(2011, 1, 2);
 // foreach (var file in files)
 // {
-//    List<StockCloseHistory> states = new();
+//    List<CloseHistory> histories = new();
 //    Stock stock = new();
 //    int lineCount = 0;
 //    foreach (var txt in File.ReadAllLines(file))
@@ -41,23 +42,23 @@ OddAubaContex db = new("../TradeStation/TradeStationDb.db");
 //       {
 //          if (!string.IsNullOrEmpty(txt))
 //          {
-//             var ss = StockCloseHistory.FromCSV(txt);
+//             var ss = CloseHistory.FromCSV(txt);
 //             if (ss.Date > cutoff)
 //             {
-//                states.Add(ss);
+//                histories.Add(ss);
 //             }
 //          }
 //       }
 //    }
 
 //    var a = "-----";
-//    if (states.Count >= 2999)
+//    if (histories.Count >= 2999)
 //    {
 //       a = $"Added - Current Total {countOfStockStates.ToString("#,###")}";
 //       db.Stock.Add(stock);
-//       db.StockCloseHistory.AddRange(states);
-//       countOfStockStates += states.Count;
-//       savePoint += states.Count;
+//       db.CloseHistory.AddRange(histories);
+//       countOfStockStates += histories.Count;
+//       savePoint += histories.Count;
 //       if (savePoint > 1000000)
 //       {
 //          Console.WriteLine("Saving...");
@@ -66,7 +67,7 @@ OddAubaContex db = new("../TradeStation/TradeStationDb.db");
 //       }
 //    }
 
-//    Console.WriteLine($"{stock.Symbol.PadRight(10, ' ')}{states.Count.ToString("#,###").PadLeft(5, ' ')} {a}");
+//    Console.WriteLine($"{stock.Symbol.PadRight(10, ' ')}{histories.Count.ToString("#,###").PadLeft(5, ' ')} {a}");
 // };
 // Console.WriteLine($"Saving remaining {savePoint.ToString("#,###")} StockStates.");
 // db.SaveChanges();
@@ -77,49 +78,49 @@ OddAubaContex db = new("../TradeStation/TradeStationDb.db");
 
 #region Consume company names data
 
-var consumeCompanyNameTimer = new Timer();
+// var consumeCompanyNameTimer = new Timer();
 
-decimal countOfAdded = 0;
-decimal countOfNotAdded = 0;
+// decimal countOfAdded = 0;
+// decimal countOfNotAdded = 0;
 
-var dir = Directory.GetCurrentDirectory();
-var files = Directory.EnumerateFiles("RawData/company_info");
-var stocks = db.Stock.ToList();
-List<Stock> stocksToUpdate = new();
-foreach (var file in files)
-{
-   stocksToUpdate = new();
-   foreach (var txt in File.ReadAllLines(file))
-   {
-      if (!string.IsNullOrEmpty(txt))
-      {
-         //example txt: A,Agilent Technologies,Life Sciences Tools & Services,44.65B
-         var strArr = txt.Split(".US");
-         var symbol = strArr[0].Trim();
-         var companyName = strArr[1].Trim();
-         var stockToUpdate = stocks.FirstOrDefault(s => s.Symbol == symbol);
-         if (stockToUpdate != null)
-         {
-            Console.WriteLine($"{symbol.PadRight(8, ' ')} Adding company name: {companyName}");
-            stockToUpdate.Company = companyName;
-            stocksToUpdate.Add(stockToUpdate);
-            countOfAdded++;
-         }
-         else
-         {
-            Console.WriteLine(symbol);
-            countOfNotAdded++;
-         }
-      }
-   }
-   db.Stock.UpdateRange(stocksToUpdate);
-   db.SaveChanges();
-}
+// var dir = Directory.GetCurrentDirectory();
+// var files = Directory.EnumerateFiles("../RawData/company_info");
+// var stocks = db.Stock.ToList();
+// List<Stock> stocksToUpdate = new();
+// foreach (var file in files)
+// {
+//    stocksToUpdate = new();
+//    foreach (var txt in File.ReadAllLines(file))
+//    {
+//       if (!string.IsNullOrEmpty(txt))
+//       {
+//          //example txt: A,Agilent Technologies,Life Sciences Tools & Services,44.65B
+//          var strArr = txt.Split(".US");
+//          var symbol = strArr[0].Trim();
+//          var companyName = strArr[1].Trim();
+//          var stockToUpdate = stocks.FirstOrDefault(s => s.Symbol == symbol);
+//          if (stockToUpdate != null)
+//          {
+//             Console.WriteLine($"{symbol.PadRight(8, ' ')} Adding company name: {companyName}");
+//             stockToUpdate.Company = companyName;
+//             stocksToUpdate.Add(stockToUpdate);
+//             countOfAdded++;
+//          }
+//          else
+//          {
+//             Console.WriteLine(symbol);
+//             countOfNotAdded++;
+//          }
+//       }
+//    }
+//    db.Stock.UpdateRange(stocksToUpdate);
+//    db.SaveChanges();
+// }
 
-var percentAdded = (countOfAdded / stocks.Count);
-Console.WriteLine($"Added names to {percentAdded.ToString("P2")}% ({countOfAdded} of {stocks.Count}) symbols.");
+// var percentAdded = (countOfAdded / stocks.Count);
+// Console.WriteLine($"Added names to {percentAdded.ToString("P2")}% ({countOfAdded} of {stocks.Count}) symbols.");
 
-consumeCompanyNameTimer.TimeStamp();
+// consumeCompanyNameTimer.TimeStamp();
 
 #endregion
 
