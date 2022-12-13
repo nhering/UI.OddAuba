@@ -18,7 +18,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TradeStation\TradeStation.csproj" />
-    <ProjectReference Include="..\DataModels\DataModels.csproj" />
   </ItemGroup>
 
 </Project>

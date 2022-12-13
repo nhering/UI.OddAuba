@@ -30,15 +30,15 @@ namespace OddAuba
       }
 
       private List<Position> _positions { get; set; } = new();
-      private List<Stock> _stocks { get; set; }
-      private List<ReferencePoint> _stockReferencePoints { get; set; }
+      private List<Pool> _stocks { get; set; }
+      private List<ReferencePoint> _refPoints { get; set; }
 
-      public AdvisorService(string accountId, List<Position> positions, List<Stock> stocks, List<ReferencePoint> stockReferences)
+      public AdvisorService(string accountId, List<Position> positions, List<Pool> stocks, List<ReferencePoint> refPoints)
       {
          this._accountId = accountId;
          this._positions = positions;
          this._stocks = stocks;
-         this._stockReferencePoints = stockReferences;
+         this._refPoints = refPoints;
       }
 
       private void Advise()
@@ -50,7 +50,7 @@ namespace OddAuba
             {
                if (a.Weight != 0)
                {
-                  var scoresToApply = a.Advise(p, _stocks, _stockReferencePoints);
+                  var scoresToApply = a.Advise(p, _stocks, _refPoints);
                   ApplyScores(scoresToApply, ref scores);
                }
             });

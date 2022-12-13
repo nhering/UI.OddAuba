@@ -1,15 +1,15 @@
-namespace DataModels
+namespace TradeStation
 {
-   public class StockCloseHistory
+   public class CloseHistory
    {
       public int Id { get; set; }
       public string Symbol { get; set; } = string.Empty;
       public DateTime Date { get; set; }
       public decimal Close { get; set; }
 
-      public static StockCloseHistory FromCSV(string csv)
+      public static CloseHistory FromCSV(string csv)
       {
-         StockCloseHistory result = new();
+         CloseHistory result = new();
          // < TICKER >,< PER >,< DATE >,< TIME >,< OPEN >,< HIGH >,< LOW >,< CLOSE >,< VOL >,< OPENINT >
          // A.US,D,19991118,000000,29.5594,32.4842,25.9889,28.5858,68866780.626131,0
          var strArr = csv.Split(',');

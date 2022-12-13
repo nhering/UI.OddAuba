@@ -7,7 +7,7 @@ namespace OddAuba
    {
       public PercentageDropAlgorithm(decimal weight) : base(weight) { }
 
-      public List<SymbolScore> Advise(Position position, List<Stock> stocks, List<ReferencePoint> references)
+      public List<SymbolScore> Advise(Position position, List<Pool> stocks, List<ReferencePoint> refPoints)
       {
          //TODO Perform algorithm
          return this.Scores;
