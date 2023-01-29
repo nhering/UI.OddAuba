@@ -1,0 +1,66 @@
+/*#region Whole Site*/
+
+* {
+    margin: 0;
+    font-family: sans-serif;
+}
+
+body {
+    display: grid;
+    grid-template-rows: auto auto auto;
+    background-color: #CCC;
+}
+
+/*#endregion*/
+
+/*#region Common*/
+
+.hide {
+    display: none;
+}
+
+/*#endregion*/
+
+/*#region Header*/
+
+#header {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    max-height: 40px;
+    background: rgb(64,64,64);   
+    border-bottom: solid 3px black;
+    padding: 10px 20px;
+}
+
+#header > .home-btn {
+    display: grid;
+    grid-template-columns: auto auto;
+    cursor: default;
+}
+
+#header > .home-btn > .logo {
+    height: 42px;
+}
+
+#header > .home-btn > .app-name {
+    color: #DDD;
+    text-shadow: -1px 2px 0 #000000bf;
+    margin: auto 0;
+    letter-spacing: .05em;
+    font-weight: bolder;
+    font-size: 44px;
+    text-align: left;
+    white-space: nowrap;
+    padding-left: 4px;
+}
+
+#funtility {
+    margin-top: 12px;
+}
+
+/*#endregion*/
+
+/*#region Page Specific*/
+
+
+/*#endregion*/

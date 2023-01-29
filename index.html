@@ -1,0 +1,35 @@
+<!DOCTYPE htlm>
+<html lang="en">
+    <head>
+        <title>OddAuba</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="shortcut icon" href="./images/Favicon.png" type="image/x-icon" />
+        <link async rel="stylesheet" href="./styles/site.css">
+        <script src="./scripts/app.js"></script>
+        <script src="./scripts/state.js"></script>
+        
+        <!--Add the next four links for the Funtility functionality.-->
+        <script src="https://funtility.github.io/funtility-js-plugin/carte.js"></script>
+        <link async rel="stylesheet" href="https://funtility.github.io/funtility-js-plugin/funtility-ui.css">
+        <script src="https://funtility.github.io/funtility-js-plugin/funtility-ui.js"></script>
+        <script src="https://funtility.github.io/funtility-js-plugin/funtility-api.js"></script>
+    </head>
+    <body>
+        <div id="header">
+            <div class="home-btn">
+                <img class="logo" src="images/OddAuba.png">
+                <div class="app-name">ddAuba</div>
+            </div>
+            <div></div>
+            <div id="funtility"></div>
+        </div>
+        <div id="content"></div>
+    </body>
+    <script>        
+        let funtilityApi, funtilityUi, app
+        window.onload = () => {
+            app = new App()
+        }
+    </script>
+</html>
