@@ -7,8 +7,13 @@
 
 body {
     display: grid;
-    grid-template-rows: auto auto auto;
+    grid-template-areas: 'header' 'content';
+    grid-template-rows: 63px auto;
     background-color: #CCC;
+}
+
+#content {
+    grid-area: content;
 }
 
 /*#endregion*/
@@ -24,6 +29,7 @@ body {
 /*#region Header*/
 
 #header {
+    grid-area: header;
     display: grid;
     grid-template-columns: auto 1fr auto;
     max-height: 40px;
@@ -59,6 +65,35 @@ body {
 }
 
 /*#endregion*/
+
+/*#region Page Home*/
+
+.login-notice {
+    z-index: 2;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 115px;
+    width: 240;
+    margin: auto;
+    margin-top: 160px;
+    text-align: center;
+    border: solid 2px rgba(0,0,0,0.3);
+    border-bottom: solid 3px black;
+    border-radius: 6px;
+    padding: 10px 0 0 0;
+    font-size: 44px;
+    color: #DDD;
+    background: rgb(64,64,64); 
+    text-shadow: -1px 2px 0 #000000bf;
+    letter-spacing: .05em;
+    font-weight: bolder;
+}
+
+/*#endregion*/
+
 
 /*#region Page Specific*/
 

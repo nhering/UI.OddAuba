@@ -1,5 +1,5 @@
 /**
- * Use the State class for storing data accross pages.
+ * Use the State class for persisting data across pages.
  * The state class also has a localstorage interfce for
  * accessing Window.localStorage to persiste state
  * accross sesssions.
@@ -8,7 +8,6 @@ class State {
    #name = "Domain:App"
    constructor(name) {
       this.#name = name
-
       this.load()
    }
 
