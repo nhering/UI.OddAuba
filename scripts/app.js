@@ -11,7 +11,7 @@ class App {
 
       if (funtilityApi.userIsSignedIn) {
          const params = this.getSearchParams()
-         if(params.pg != "") {
+         if(params.pg) {
             this.loadPage(params.pg)
          } else {
             window.location = `${window.location.pathname}?pg=settings`
@@ -23,13 +23,13 @@ class App {
 
    getSearchParams(){
       const search = window.location.search.substring(1)
-      let result = {
-            pg: ""
-         }
+      // let result = {  pg: "" } // explicit way
+      let result = { } // implicit way
       if (search != ""){
          search.split('&').forEach((n) => {
             let arg = n.split('=')
-            if (arg[0] == "pg") result.pg = arg[1]
+            // if (arg[0].toLocaleLowerCase() == "pg") result.pg = arg[1].toLocaleLowerCase() // explicit way
+            result[arg[0].toLocaleLowerCase()] = arg[1].toLocaleLowerCase() // implicit way
          })
       }
       return result
@@ -78,9 +78,9 @@ class App {
          break
       }
       try {
-         setTimeout(fn,100)
+         setTimeout(fn,300)
       } catch {
-         setTimeout(fn,200)
+         setTimeout(fn,600)
       }
    }
 
