@@ -14,7 +14,7 @@ class App {
          if(params.pg != "") {
             this.loadPage(params.pg)
          } else {
-            this.loadPage("settings")
+            window.location = `${window.location.pathname}?pg=$settings`
          }
       } else {
          this.loadPage("home")
@@ -23,16 +23,16 @@ class App {
 
    getSearchParams(){
       const search = window.location.search.substring(1)
-      if (search != ""){
-         let result = {
-         pg: ""
+      let result = {
+            pg: ""
          }
+      if (search != ""){
          search.split('&').forEach((n) => {
             let arg = n.split('=')
             if (arg[0] == "pg") result.pg = arg[1]
          })
-         return result
       }
+      return result
    }
 
    loadPage(pg)
