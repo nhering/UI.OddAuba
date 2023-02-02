@@ -14,7 +14,7 @@ class App {
          if(params.pg != "") {
             this.loadPage(params.pg)
          } else {
-            window.location = `${window.location.pathname}?pg=$settings`
+            window.location = `${window.location.pathname}?pg=settings`
          }
       } else {
          this.loadPage("home")
