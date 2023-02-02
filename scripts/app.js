@@ -13,6 +13,8 @@ class App {
          const params = this.getSearchParams()
          if(params.pg != "") {
             this.loadPage(params.pg)
+         } else {
+            this.loadPage("settings")
          }
       } else {
          this.loadPage("home")
