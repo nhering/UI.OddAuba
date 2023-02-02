@@ -1,23 +1,26 @@
 class HomePage {
    constructor() {
-      console.log('HomePage.constructor')
    }
 
    get element()
    {
-      let result = document.createElement('div')
-      result.setAttribute('id','content')
-      result.classList.add('page')
-      result.appendChild(this.notice)
-      return result
+      let e = document.createElement('div')
+      e.setAttribute('id','content')
+      e.classList.add('page')
+      e.appendChild(this.notice)
+      return e
    }
 
    get notice()
    {
-      let notice = document.createElement('div')
-      notice.classList.add('login-notice')
-      notice.innerText = "Sign In Required"
-      return notice
+      let n = document.createElement('div')
+      n.classList.add('login-notice')
+      // n.innerText = "Sign In Required"
+      n.addEventListener('click', () => {
+         funtilityUi.showModal(funtilityUi.SignInContainer)
+      })
+      n.innerHTML = "<span class='link'>Sign In</span><br/><span>Required</span>"
+      return n
    }
 }
 

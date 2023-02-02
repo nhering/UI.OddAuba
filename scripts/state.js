@@ -5,31 +5,39 @@
  * accross sesssions.
  */
 class State {
-   #name = "Domain:App"
+   #name = ""
    constructor(name) {
       this.#name = name
       this.load()
    }
 
-   //#region example property
-
-   #property = "default value"
-
-   get property()
+   #currentPage
+   get currentPage() { return this.#currentPage }
+   set currentPage(value)
    {
-      return this.#property
+      this.#currentPage = value
+      this.save()
    }
 
-   set property(value)
+   //#region Pool Page 
+
+   #poolListParams
+   get poolListParams() { return this.#poolListParams }
+   set poolListParams(value)
    {
-      try {
-         // this is where you can validate the incoming value
-         this.#property = value
-      } catch (error) {
-         console.error(error)
-         this.#property = "default value"
-      }
+      this.#poolListParams = value
       this.save()
+   }
+
+   #poolListItems = ['A','AA','AAOI'];
+   get poolListItems() { return this.#poolListItems }
+   set poolListItems(value)
+   {
+      if(typeof(value) === 'string') {
+         this.#poolListItems = value.split(',')
+      } else {
+         this.#poolListItems = value
+      }
    }
 
    //#endregion
@@ -37,28 +45,31 @@ class State {
    //#region Local Storage
 
    load() {
-      let local = localStorage.getItem(this.name)
+      let local = localStorage.getItem(this.#name)
       if (local == null)
       {
-         this.#property = "default value"
+         this.#currentPage = "Home"
+         this.#poolListParams = { sort:"", search:"" }
       }
       else
       {
          local = JSON.parse(local)
-         this.#property = local.property
+         this.#currentPage = local.currentPage
+         this.#poolListParams = local.poolListParams
       }
       this.save()
    }
 
    save()
    {
-      localStorage.setItem(this.name,this.toJson())
+      localStorage.setItem(this.#name,this.toJson())
    }
 
    toJson()
    {
       return `{
-         "property": "${this.property}"
+         "currentPage": "${this.currentPage}",
+         "poolListParams": ${JSON.stringify(this.poolListParams)}
       }`
    }
 

@@ -6,9 +6,9 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="shortcut icon" href="./images/Favicon.png" type="image/x-icon" />
         <link async rel="stylesheet" href="./styles/site.css">
-        <script src="./scripts/app.js"></script>
-        <script src="./scripts/components/menu.js"></script>
         <script src="./scripts/state.js"></script>
+        <script src="./scripts/components/menu.js"></script>
+        <script src="./scripts/app.js"></script>
         
         <!--Add the next four links for the Funtility functionality.-->
         <script src="https://funtility.github.io/funtility-js-plugin/carte.js"></script>
@@ -23,13 +23,16 @@
                 <div class="app-name">ddAuba</div>
             </div>
             <div></div>
-            <div id="funtility"></div>
+            <div class="hide" id="funtility"></div>
         </div>
         <div id="content"></div>
     </body>
     <script>        
-        let funtilityApi, funtilityUi, app
+        let state, funtilityApi, funtilityUi, app
         window.onload = () => {
+            state = new State("OddAuba:Portal")
+            funtilityApi = window.location.host ? new FuntilityAPI("OddAuba") : new FuntilityAPI("OddAuba",'http://localhost:5194/')
+            funtilityUi = new FuntilityUI(funtilityApi, true)
             app = new App()
         }
     </script>

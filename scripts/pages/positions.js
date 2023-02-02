@@ -1,4 +1,4 @@
-class SettingsPage {
+class PositionsPage {
    constructor() {
    }
 
@@ -17,7 +17,7 @@ class SettingsPage {
       let e = document.createElement('div')
       e.setAttribute('id','top-bar')
       e.appendChild(menuButton())
-      e.appendChild(pageLabel('Settings'))
+      e.appendChild(pageLabel('Positions'))
       return e
    }
 

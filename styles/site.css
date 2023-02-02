@@ -8,12 +8,32 @@
 body {
     display: grid;
     grid-template-areas: 'header' 'content';
-    grid-template-rows: 63px auto;
+    grid-template-rows: 63px 1fr;
     background-color: #CCC;
 }
 
 #content {
     grid-area: content;
+    overflow-y: hidden;
+}
+
+#top-bar {
+    display: inline-flex;
+    background-color: rgb(0, 94, 170);
+    box-shadow: inset 73px 0 #008cff ;
+    border-bottom: solid 3px black;
+    width: 100%;
+    height: 56px;
+}
+
+.page-lbl {
+    margin-left: 6px;
+    font-size: 42px;
+    height: 36px;
+    padding: 5px 0 0 12px;
+    color: #DDD;
+    text-shadow: -1px 2px 0 #000000bf;
+    font-weight: bold;
 }
 
 /*#endregion*/
@@ -22,6 +42,31 @@ body {
 
 .hide {
     display: none;
+}
+
+.under-construction {
+    cursor: none;
+    z-index: 2;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 80px;
+    width: 240;
+    margin: auto;
+    margin-top: 160px;
+    text-align: center;
+    border: solid 2px rgba(0,0,0,0.3);
+    border-top: dashed 10px black;
+    border-bottom: dashed 10px black;
+    padding: 10px 0 0 0;
+    font-size: 30px;
+    color: #222;
+    background: rgb(219, 233, 21);
+    letter-spacing: .05em;
+    font-weight: bolder;
+    box-shadow: 0 0 12px #000;
 }
 
 /*#endregion*/
@@ -50,7 +95,7 @@ body {
 
 #header > .home-btn > .app-name {
     color: #DDD;
-    text-shadow: -1px 2px 0 #000000bf;
+    text-shadow: -1px 2px 0 #000;
     margin: auto 0;
     letter-spacing: .05em;
     font-weight: bolder;
@@ -66,9 +111,55 @@ body {
 
 /*#endregion*/
 
+/*#region Menu*/
+
+#menu-btn {
+    height: 68px;
+    width: 56px;
+    background-color: rgb(64,64,64);
+    transform: rotate(90deg);
+    cursor: pointer;
+    border: 2px solid rgb(64,64,64);
+    margin-top: -10px
+}
+
+#menu-btn > span {
+    padding: 9px;
+    font-size: 45px;
+    color: #CCC;
+    font-weight: bolder;
+}
+
+#menu {
+    position: absolute;
+    background: rgb(64,64,64);
+    text-shadow: -1px 2px 0 #000;
+    color: #CCC;
+    border-right: solid 6px #CCC;
+}
+
+.menu-item {
+    cursor: pointer;
+    font-size: 24px;
+    padding: 10px;
+    border-left: rgb(64, 64, 64) solid 4px;
+}
+
+.menu-item.selected {
+    cursor: default;
+    text-shadow: -1px 2px 0 #000000bf;
+    color: #EEE;
+    background-color: rgb(0, 94, 170);
+    border-left: #008cff solid 4px;
+}
+
+/*#endregion*/
+
+
 /*#region Page Home*/
 
 .login-notice {
+    cursor: pointer;
     z-index: 2;
     position: absolute;
     top: 0;
@@ -87,13 +178,109 @@ body {
     font-size: 44px;
     color: #DDD;
     background: rgb(64,64,64); 
-    text-shadow: -1px 2px 0 #000000bf;
+    text-shadow: -1px 2px 0 #000;
     letter-spacing: .05em;
     font-weight: bolder;
+    box-shadow: 0 0 12px #000;
+}
+
+.login-notice > .link {
+    color:#006ec9;
+    text-decoration: underline;
+}
+/*#endregion*/
+
+/*#region Page Pool*/
+
+@media(max-width:800px)
+{
+    .page-pool {
+        width: 100%;
+    }
+}
+@media(min-width:801px) and (max-width:1280px)
+{
+    .page-pool {
+        width: 75%
+    }
+}
+@media(min-width:1281px)
+{
+    .page-pool {
+        width: 50%;
+    }
+}
+
+.page-pool {
+    overflow-y: hidden;
+    margin: auto;
+    background-color: #DDD;
+    padding: 0 12px 0 0;
+}
+
+.page-pool .controls {
+    height: 55px;
+    display: inline-flex;
+    width: 100%
+}
+
+.page-pool .controls .control {
+    width: 33%;
+    margin: 10px 0 0 10px;
+}
+
+.page-pool .controls .control label {
+    display: block;
+    text-align: center;
+}
+
+.page-pool .controls .control select {
+    width: 100%;
+    text-align: center;
+}
+
+.page-pool .controls .control input {
+    width: 100%;
+}
+
+.page-pool .list {
+    margin-left: 10px;
+    min-width: 30%;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    padding: 0 0 0 6px;
+}
+
+.page-pool .list-item {
+    display: inline-flex;
+    width: 100%;
+    overflow-x: hidden;
+    padding: 2px;
+}
+
+.page-pool .list-item:nth-child(odd) {
+    background-color: rgba(256,256,256,.1);
+}
+
+.page-pool .list-item .chk-box {
+    cursor: pointer;
+    width: 20px;
+    height: 20px;
+    border: solid 1px #000;
+    border-radius: 3px;
+}
+
+.page-pool .list-item .chk-box.checked {
+    background-color: #006ec9;
+}
+
+.page-pool .list-item .symbol {
+    height: 30px;
+    width: 60px;
+    margin-left: 6px;
 }
 
 /*#endregion*/
-
 
 /*#region Page Specific*/
 

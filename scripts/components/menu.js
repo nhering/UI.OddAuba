@@ -4,18 +4,17 @@
  * passed into the constructor.
  */
 class Menu {
-   #items = []
-   #selectedItem = ""
-   constructor(selectedItem)
-   {
-      this.#items = ["Settings"]
-      this.#selectedItem = selectedItem
-   }
+   constructor() {}
+   #items = [
+      "Positions",
+      "Tranche",
+      "Pool",
+      "Settings"]
 
    get element()
    {
       let div = document.createElement('div')
-      div.classList.add('menu')
+      div.setAttribute('id', 'menu')
       this.#items.forEach(i => {
          div.appendChild(this.menuItem(i))
       })
@@ -26,14 +25,42 @@ class Menu {
    {
       let div = document.createElement('div')
       div.classList.add('menu-item')
-      if(this.#selectedItem == item.display) {
+      if(item.toLowerCase() == state.currentPage.toLowerCase()) {
          div.classList.add("selected")
+         div.addEventListener('click', () => {
+            let m = document.getElementById('menu')
+            if(m) { m.remove() }
+         })
       } else {
-         div.addEventListener('click', () => { 
-            window.location = `${window.location.pathname}?pg=${item.display}`
+         div.addEventListener('click', () => {
+            state.currentPage = item
+            window.location = `${window.location.pathname}?pg=${item.toLowerCase()}`
          })
       }
-      div.innerText(item.display)
+      div.innerText = item
       return div
    }
+}
+
+menuButton = () => {
+   let e = document.createElement('div')
+   e.setAttribute('id','menu-btn')
+   e.addEventListener('click', () => {
+      let m = document.getElementById('menu')
+      if(m) {
+         m.remove()
+      } else {
+         let hdr = document.getElementById('header').offsetHeight
+         let btn = document.getElementById('top-bar').offsetHeight
+         let m = new Menu().element
+         m.style.top = hdr + btn
+         let bod = document.querySelector('body')
+         m.style.height = bod.offsetHeight - (hdr + btn)
+         bod.appendChild(m)
+      }
+   })
+   let s = document.createElement('span')
+   s.innerText = "|||"
+   e.appendChild(s)
+   return e
 }

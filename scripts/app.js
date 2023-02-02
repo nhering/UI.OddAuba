@@ -1,20 +1,20 @@
 class App {
    constructor() {
-      // this.content = document.getElementById("content")
-      this.state = new State("OddAuba:UI")
-      this.funtilityApi = window.location.host ? new FuntilityAPI("OddAuba") : new FuntilityAPI("OddAuba",'http://localhost:5194/')
-      this.funtilityUi = new FuntilityUI(this.funtilityApi, true)
       this.route()
    }
 
    route() {
-      if (this.funtilityApi.userIsSignedIn) {
+      // const params = this.getSearchParams()
+      // if(params.pg != "") {
+      //    this.loadPage(params.pg)
+      // }
+
+      if (funtilityApi.userIsSignedIn) {
          const params = this.getSearchParams()
          if(params.pg != "") {
             this.loadPage(params.pg)
          }
       } else {
-         //OddAuba is a private application, show nothing if the user is not signed in.
          this.loadPage("home")
       }
    }
@@ -29,28 +29,57 @@ class App {
             let arg = n.split('=')
             if (arg[0] == "pg") result.pg = arg[1]
          })
-         return args
+         return result
       }
    }
 
    loadPage(pg)
    {
       let fn
-      if (pg === "settings")
-      {
-         this.swapContentScript('./scripts/pages/settings.js')
-         fn = () => {
-            this.content.appendChild(new SettingsPage().element) 
-         }
-      } else {
-         this.swapContentScript('./scripts/pages/home.js')         
-         fn = () => {
-            document.getElementById('content').remove()
-            document.querySelector('body').appendChild(new HomePage().element)
-            // new BackgroundAnimation()
-         }
+      document.getElementById('content').remove()
+      switch(pg) {
+         case "pool":
+            this.swapContentScript('./scripts/pages/pool.js')
+            fn = () => {
+               let pg = new PoolPage()
+               document.querySelector('body').appendChild(pg.element)
+               pg.populateList()
+            }
+         break
+         case "positions":
+            this.swapContentScript('./scripts/pages/positions.js')
+            fn = () => {
+               let pg = new PositionsPage()
+               document.querySelector('body').appendChild(pg.element)
+            }
+         break
+         case "settings":
+            this.swapContentScript('./scripts/pages/settings.js')
+            fn = () => {
+               let pg = new SettingsPage()
+               document.querySelector('body').appendChild(pg.element) 
+            }
+         break
+         case "tranche":
+            this.swapContentScript('./scripts/pages/tranche.js')
+            fn = () => {
+               let pg = new TranchePage()
+               document.querySelector('body').appendChild(pg.element)
+            }
+         break
+         default:
+            this.swapContentScript('./scripts/pages/home.js')         
+            fn = () => {
+               document.querySelector('body').appendChild(new HomePage().element)
+               new BackgroundAnimation()
+            }
+         break
       }
-      setTimeout(fn,300)
+      try {
+         setTimeout(fn,100)
+      } catch {
+         setTimeout(fn,200)
+      }
    }
 
    swapContentScript(src)
@@ -64,4 +93,11 @@ class App {
       ele.setAttribute('id','content-script')
       document.querySelector('head').appendChild(ele)
    }
+}
+
+pageLabel = (lbl) => {
+   let e = document.createElement('div')
+   e.classList.add('page-lbl')
+   e.innerText = lbl
+   return e
 }
