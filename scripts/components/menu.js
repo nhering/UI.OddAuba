@@ -64,3 +64,5 @@ menuButton = () => {
    e.appendChild(s)
    return e
 }
+
+let warnBeforeNavigating = false

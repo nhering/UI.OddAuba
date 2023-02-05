@@ -1,24 +1,6 @@
-class TranchePage {
+class TranchePage extends PageBase {
    constructor() {
-   }
-
-   get element()
-   {
-      let e = document.createElement('div')
-      e.setAttribute('id','content')
-      e.classList.add('page')
-      e.appendChild(this.topBar)
-      e.appendChild(this.mainArea)
-      return e
-   }
-
-   get topBar()
-   {
-      let e = document.createElement('div')
-      e.setAttribute('id','top-bar')
-      e.appendChild(menuButton())
-      e.appendChild(pageLabel('Tranche'))
-      return e
+      super("Tranche")
    }
 
    get mainArea()
@@ -29,3 +11,5 @@ class TranchePage {
       return n
    }
 }
+
+page = new TranchePage()

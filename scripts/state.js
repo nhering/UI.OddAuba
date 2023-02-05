@@ -29,7 +29,7 @@ class State {
       this.save()
    }
 
-   #poolListItems = ['A','AA','AAOI'];
+   #poolListItems = [];
    get poolListItems() { return this.#poolListItems }
    set poolListItems(value)
    {

@@ -1,6 +1,7 @@
-class HomePage {
+class HomePage extends PageBase{
    constructor() {
-   }
+    super("Home")
+    }
 
    get element()
    {
@@ -15,14 +16,20 @@ class HomePage {
    {
       let n = document.createElement('div')
       n.classList.add('login-notice')
-      // n.innerText = "Sign In Required"
       n.addEventListener('click', () => {
          funtilityUi.showModal(funtilityUi.SignInContainer)
       })
       n.innerHTML = "<span class='link'>Sign In</span><br/><span>Required</span>"
       return n
    }
+
+   load()
+   {
+        new BackgroundAnimation()
+   }
 }
+
+page = new HomePage()
 
 
 class BackgroundAnimation {
@@ -244,3 +251,4 @@ class BackgroundAnimation {
    }
 }
 
+page = new HomePage()

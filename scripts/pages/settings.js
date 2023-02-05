@@ -1,24 +1,6 @@
-class SettingsPage {
+class SettingsPage extends PageBase {
    constructor() {
-   }
-
-   get element()
-   {
-      let e = document.createElement('div')
-      e.setAttribute('id','content')
-      e.classList.add('page')
-      e.appendChild(this.topBar)
-      e.appendChild(this.mainArea)
-      return e
-   }
-
-   get topBar()
-   {
-      let e = document.createElement('div')
-      e.setAttribute('id','top-bar')
-      e.appendChild(menuButton())
-      e.appendChild(pageLabel('Settings'))
-      return e
+      super("Settings")
    }
 
    get mainArea()
@@ -29,3 +11,5 @@ class SettingsPage {
       return n
    }
 }
+
+page = new SettingsPage()

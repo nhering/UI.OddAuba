@@ -1,105 +1,124 @@
 class App {
-   constructor() {
-      this.route()
-   }
+   constructor() { }
 
-   route() {
-      // const params = this.getSearchParams()
-      // if(params.pg != "") {
-      //    this.loadPage(params.pg)
-      // }
-
-      if (funtilityApi.userIsSignedIn) {
-         const params = this.getSearchParams()
-         if(params.pg) {
-            this.loadPage(params.pg)
+   async route() {
+      let allowEntry = funtilityApi.userIsSignedIn
+      // allowEntry = true //for develop purposes, comment for production
+      if (allowEntry) {
+         const params = this.queryParams
+         if (params.pg && params.pg != 'home') {
+            await this.loadPage(params.pg)
          } else {
             window.location = `${window.location.pathname}?pg=settings`
          }
       } else {
-         this.loadPage("home")
+         await this.loadPage('home')
       }
    }
 
-   getSearchParams(){
+   get queryParams()
+   {
+      let result = { }
       const search = window.location.search.substring(1)
-      // let result = {  pg: "" } // explicit way
-      let result = { } // implicit way
       if (search != ""){
          search.split('&').forEach((n) => {
             let arg = n.split('=')
-            // if (arg[0].toLocaleLowerCase() == "pg") result.pg = arg[1].toLocaleLowerCase() // explicit way
-            result[arg[0].toLocaleLowerCase()] = arg[1].toLocaleLowerCase() // implicit way
+            result[arg[0].toLocaleLowerCase()] = arg[1].toLocaleLowerCase()
          })
       }
       return result
    }
 
-   loadPage(pg)
+   async loadPage(pg)
    {
-      let fn
-      document.getElementById('content').remove()
-      switch(pg) {
-         case "pool":
-            this.swapContentScript('./scripts/pages/pool.js')
-            fn = () => {
-               let pg = new PoolPage()
-               document.querySelector('body').appendChild(pg.element)
-               pg.populateList()
-            }
-         break
-         case "positions":
-            this.swapContentScript('./scripts/pages/positions.js')
-            fn = () => {
-               let pg = new PositionsPage()
-               document.querySelector('body').appendChild(pg.element)
-            }
-         break
-         case "settings":
-            this.swapContentScript('./scripts/pages/settings.js')
-            fn = () => {
-               let pg = new SettingsPage()
-               document.querySelector('body').appendChild(pg.element) 
-            }
-         break
-         case "tranche":
-            this.swapContentScript('./scripts/pages/tranche.js')
-            fn = () => {
-               let pg = new TranchePage()
-               document.querySelector('body').appendChild(pg.element)
-            }
-         break
-         default:
-            this.swapContentScript('./scripts/pages/home.js')         
-            fn = () => {
-               document.querySelector('body').appendChild(new HomePage().element)
-               new BackgroundAnimation()
-            }
-         break
-      }
-      try {
-         setTimeout(fn,300)
-      } catch {
-         setTimeout(fn,600)
-      }
+      let c = document.getElementById('content')
+      if (c) c.remove()
+      
+      state.currentPage = pg
+      let src = './scripts/pages/home.js'
+
+      if      (pg === 'home')       { src = './scripts/pages/home.js' }
+      else if (pg === 'pool')       { src = './scripts/pages/pool.js' } 
+      else if (pg === 'positions')  { src = './scripts/pages/positions.js' } 
+      else if (pg === 'settings')   { src = './scripts/pages/settings.js' } 
+      else if (pg === 'tranche')    { src = './scripts/pages/tranche.js' }
+
+      await this.loadPageScript(src)
+      .then((page) => {
+         document.body.appendChild(page.element)
+         page.load()
+      })
+      .catch((error) => {
+         alert(error)
+      })
    }
 
-   swapContentScript(src)
+   async loadPageScript(src)
    {
-      let old = document.getElementById('content-script')
-      if (old) old.remove()
-
-      let ele = document.createElement('script')
-      ele.setAttribute('type','text/javascript')
-      ele.setAttribute('src',src)
-      ele.setAttribute('id','content-script')
-      document.querySelector('head').appendChild(ele)
+      return new Promise((resolve, reject) => {
+         try {
+            let ele = document.createElement('script')
+            ele.setAttribute('async', true)
+            ele.setAttribute('type','text/javascript')
+            ele.setAttribute('src',src)
+            ele.setAttribute('id','page-file')
+            ele.addEventListener('load',() => {
+               resolve(page)
+            })
+            document.head.appendChild(ele)
+         } catch (error) {
+            reject(error)
+         }
+      })
    }
 }
 
-pageLabel = (lbl) => {
-   let e = document.createElement('div')
-   e.classList.add('page-lbl')
-   e.innerText = lbl
-   return e
+class PageBase {
+   pageName
+   constructor(name) {
+      this.pageName = name
+    }
+
+    get element()
+    {
+       let e = document.createElement('div')
+       e.setAttribute('id','content')
+       e.classList.add('page')
+       e.appendChild(this.topBar)
+       e.appendChild(this.mainArea)
+       return e
+    }
+
+   get topBar()
+   {
+      let e = document.createElement('div')
+      e.setAttribute('id','top-bar')
+      e.appendChild(menuButton())
+      e.appendChild(this.pageLabel)
+      return e
+   }
+   
+   get pageLabel()
+   {
+      let e = document.createElement('div')
+      e.classList.add('page-lbl')
+      e.innerText = this.pageName;
+      return e
+   }
+
+   /**
+    * Overrideable property for implementations of the PageBase class
+    */
+   get mainArea() {
+      let e = document.createElement('div')
+      return e
+   }
+
+   /**
+    * Overrideable method for implementations of the Page class.
+    * This is called when the site is loaded and a 'pg' query parameter
+    * is found. This should be overriden by the inheriting PageBase
+    * class if it needs to perform any async loading.
+    */
+   async load() { }
 }
