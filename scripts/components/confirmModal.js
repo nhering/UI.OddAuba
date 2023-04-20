@@ -22,7 +22,7 @@ class ConfirmModal {
       return e
    }
 
-   get popUp()
+   get container()
    {
       let e = document.createElement('div')
       return e

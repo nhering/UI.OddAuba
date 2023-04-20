@@ -63,11 +63,11 @@ class PoolPage extends PageBase {
       return s
    }
 
-   option(txt)
+   option(opt)
    {
       let o = document.createElement('option')
-      o.setAttribute('value',txt[0])
-      o.innerHTML = txt[1]
+      o.setAttribute('value',opt[0])
+      o.innerHTML = opt[1]
       return o
    }
 
@@ -145,7 +145,7 @@ class PoolPage extends PageBase {
          })
    }
 
-   #listParams = { sort: "", search: "" }
+   #listParams = state.poolListParams
    sortedList()
    {
       let mine = []
@@ -220,6 +220,7 @@ class PoolPage extends PageBase {
          list.sort()
       }
       state.poolListItems = list
+      this.populateList()
    }
 
    async load() {

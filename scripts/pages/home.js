@@ -1,9 +1,10 @@
 class HomePage extends PageBase{
    constructor() {
-    super("Home")
+    super("OddAuba")
     }
 
-   get element()
+
+   get mainArea()
    {
       let e = document.createElement('div')
       e.setAttribute('id','content')
@@ -19,7 +20,7 @@ class HomePage extends PageBase{
       n.addEventListener('click', () => {
          funtilityUi.showModal(funtilityUi.SignInContainer)
       })
-      n.innerHTML = "<span class='link'>Sign In</span><br/><span>Required</span>"
+      n.innerHTML = "<span class='link'>Sign In</span><br/><span class='sub'>Required</span>"
       return n
    }
 
@@ -28,9 +29,6 @@ class HomePage extends PageBase{
         new BackgroundAnimation()
    }
 }
-
-page = new HomePage()
-
 
 class BackgroundAnimation {
    constructor() {
@@ -41,12 +39,12 @@ class BackgroundAnimation {
        this.targetElement.appendChild(this.canvas);
        
        // Customizable properties
-       this.backgroundColor =  "rgb(0,0,0)";
-       this.hexagonStyle = { radius: 35, gap: 0, red: 200, green: 200, blue: 200, alpha: 1};
-       this.affectorCount = { max: 5, min: 2 };
-       this.affectorRadiusPercent = { max: 1, min: .8 };
+       this.backgroundColor =  "rgb(120,120,120)";
+       this.hexagonStyle = { radius: 30, gap: -2, red: 200, green: 200, blue: 200, alpha: 1};
+       this.affectorCount = { max: 3, min: 1 };
+       this.affectorRadiusPercent = { max: 1, min: .5 };
        this.affectorSpeedRange = { max: 20, min: 10 };
-       this.affectorMaxAffect = { radius: .03, alpha: .2 };
+       this.affectorMaxAffect = { radius: 0, alpha: -.2 };
        
        // Non-customizable properties.
        this.hexagonArray = [];

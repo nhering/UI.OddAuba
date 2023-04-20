@@ -19,7 +19,7 @@ class State {
       this.save()
    }
 
-   //#region Pool Page 
+   //#region Pool Page
 
    #poolListParams
    get poolListParams() { return this.#poolListParams }

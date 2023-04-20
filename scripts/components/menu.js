@@ -1,12 +1,10 @@
 /**
  * Creates a div containing all the menu items
- * and wires them up to the callback function
- * passed into the constructor.
  */
 class Menu {
    constructor() {}
    #items = [
-      "Positions",
+      "Restrict",
       "Tranche",
       "Pool",
       "Settings"]

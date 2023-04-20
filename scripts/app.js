@@ -3,7 +3,7 @@ class App {
 
    async route() {
       let allowEntry = funtilityApi.userIsSignedIn
-      // allowEntry = true //for develop purposes, comment for production
+      //allowEntry = true //for develop purposes, comment for production
       if (allowEntry) {
          const params = this.queryParams
          if (params.pg && params.pg != 'home') {
@@ -39,12 +39,13 @@ class App {
 
       if      (pg === 'home')       { src = './scripts/pages/home.js' }
       else if (pg === 'pool')       { src = './scripts/pages/pool.js' } 
-      else if (pg === 'positions')  { src = './scripts/pages/positions.js' } 
+      else if (pg === 'restrict')   { src = './scripts/pages/restrict.js' } 
       else if (pg === 'settings')   { src = './scripts/pages/settings.js' } 
       else if (pg === 'tranche')    { src = './scripts/pages/tranche.js' }
+      else                          { src = './scripts/pages/home.js' }
 
       await this.loadPageScript(src)
-      .then((page) => {
+      .then(async (page) => {
          document.body.appendChild(page.element)
          page.load()
       })
@@ -74,9 +75,18 @@ class App {
 }
 
 class PageBase {
-   pageName
+   pageName = ""
    constructor(name) {
       this.pageName = name
+      this.init()
+    }
+
+    init()
+    {
+      setTimeout(async () => {
+         let ticker = new Ticker()
+         await ticker.load()
+      },100)
     }
 
     get element()
@@ -93,8 +103,10 @@ class PageBase {
    {
       let e = document.createElement('div')
       e.setAttribute('id','top-bar')
-      e.appendChild(menuButton())
+      if(funtilityApi.userIsSignedIn) e.appendChild(menuButton())
       e.appendChild(this.pageLabel)
+      e.appendChild(this.marketStatus)
+      e.appendChild(this.marketIndicator)
       return e
    }
    
@@ -103,6 +115,20 @@ class PageBase {
       let e = document.createElement('div')
       e.classList.add('page-lbl')
       e.innerText = this.pageName;
+      return e
+   }
+
+   get marketStatus()
+   {
+      let e = document.createElement('div')
+      e.id = 'market-status'
+      return e
+   }
+
+   get marketIndicator()
+   {
+      let e = document.createElement('div')
+      e.id = 'market-indicator'
       return e
    }
 

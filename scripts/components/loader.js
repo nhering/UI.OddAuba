@@ -49,7 +49,6 @@ const loader = {
    },
    hide()
    {
-      // console.log(`e:${error} | s:${success}`)
       let d = this.minDuration - this.duration
       if (d > 0) {
          setTimeout(() => {

@@ -7,34 +7,72 @@
 
 body {
     display: grid;
-    grid-template-areas: 'header' 'content';
-    grid-template-rows: 63px 1fr;
+    grid-template-areas: 'content';
+    grid-template-rows: 1fr;
     background-color: #CCC;
 }
 
-#content {
-    grid-area: content;
-    overflow-y: hidden;
-}
+/*#region Top Bar*/
 
 #top-bar {
     display: inline-flex;
-    background-color: rgb(0, 94, 170);
-    box-shadow: inset 73px 0 #008cff ;
-    border-bottom: solid 3px black;
+    background-color: rgb(64,64,64);
     width: 100%;
     height: 56px;
 }
 
 .page-lbl {
-    margin-left: 6px;
+    margin-left: 16px;
     font-size: 42px;
-    height: 36px;
-    padding: 5px 0 0 12px;
+    padding: 5px 0 0 16px;
     color: #DDD;
-    text-shadow: -1px 2px 0 #000000bf;
-    font-weight: bold;
+    border-left: solid 2px #CCC;
 }
+
+#market-status {
+    color:#CCC;
+    padding: 12px 0 0 12px;
+    margin-left: 20px;
+    border-left: solid 2px #CCC;
+}
+
+/*#region Menu*/
+
+#menu-btn {
+    height: 68px;
+    width: 56px;
+    background-color: rgb(64,64,64);
+    transform: rotate(90deg);
+    cursor: pointer;
+    border: 2px solid rgb(64,64,64);
+    margin-top: -10px
+}
+
+#menu-btn > span {
+    padding: 12px;
+    font-size: 45px;
+    color: #CCC;
+}
+
+#menu {
+    position: absolute;
+    background: rgb(64,64,64);
+    color: #CCC;
+}
+
+.menu-item {
+    cursor: pointer;
+    border-top: dotted 1px black;
+    font-size: 24px;
+    padding: 10px;
+}
+
+.menu-item.selected {
+    cursor: default;
+    color: #747474;
+}
+
+/*#endregion*/
 
 /*#endregion*/
 
@@ -57,15 +95,13 @@ body {
     text-align: center;
     line-height: 1.6em;
     font-weight: bold;
+    color: #333;
     border-radius: 12px;
-    border: solid 1px #000;
-    box-shadow: inset 0 0 5px #FFF;
-    text-shadow: 0 0 2px rgba(255 255 255 / 50%);
+    border: solid 1px #353535;
 }
 
 .under-construction {
     cursor: none;
-    /* z-index: 2; */
     position: absolute;
     top: 0;
     left: 0;
@@ -89,106 +125,14 @@ body {
 
 /*#endregion*/
 
-/*#region Header*/
-
-#header {
-    grid-area: header;
-    display: grid;
-    grid-template-columns: auto 1fr auto;
-    max-height: 40px;
-    background: rgb(64,64,64);   
-    border-bottom: solid 3px black;
-    padding: 10px 20px;
-}
-
-#header > .home-btn {
-    display: grid;
-    grid-template-columns: auto auto;
-    cursor: default;
-}
-
-#header > .home-btn > .logo {
-    height: 42px;
-}
-
-#header > .home-btn > .app-name {
-    color: #DDD;
-    text-shadow: -1px 2px 0 #000;
-    margin: auto 0;
-    letter-spacing: .05em;
-    font-weight: bolder;
-    font-size: 44px;
-    text-align: left;
-    white-space: nowrap;
-    padding-left: 4px;
-}
-
-#funtility {
-    margin-top: 12px;
-}
-
 /*#endregion*/
 
-/*#region Menu*/
+/*#region Page Specific*/
 
-#menu-btn {
-    height: 68px;
-    width: 56px;
-    background-color: rgb(64,64,64);
-    transform: rotate(90deg);
-    cursor: pointer;
-    border: 2px solid rgb(64,64,64);
-    margin-top: -10px
+#content {
+    grid-area: content;
+    overflow-y: hidden;
 }
-
-#menu-btn > span {
-    padding: 9px;
-    font-size: 45px;
-    color: #CCC;
-    font-weight: bolder;
-}
-
-#menu {
-    position: absolute;
-    background: rgb(64,64,64);
-    text-shadow: -1px 2px 0 #000;
-    color: #CCC;
-    border-right: solid 2px #000;
-}
-
-.menu-item {
-    cursor: pointer;
-    font-size: 24px;
-    padding: 10px;
-    border-left: rgb(64, 64, 64) solid 4px;
-}
-
-.menu-item.selected {
-    cursor: default;
-    text-shadow: -1px 2px 0 #000000bf;
-    color: #EEE;
-    background-color: rgb(0, 94, 170);
-    border-left: #008cff solid 4px;
-}
-
-/*#endregion*/
-
-/*#region Modal*/
-
-/* #modal {
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    background-color: rgba(0,0,0,.3);
-}
-
-#modal > .pop-up {
-
-} */
-
-/*#endregion*/
 
 /*#region Page Home*/
 
@@ -200,28 +144,28 @@ body {
     left: 0;
     right: 0;
     bottom: 0;
-    height: 115px;
+    height: 100px;
     width: 240;
     margin: auto;
     margin-top: 160px;
     text-align: center;
-    border: solid 2px rgba(0,0,0,0.3);
-    border-bottom: solid 3px black;
-    border-radius: 6px;
     padding: 10px 0 0 0;
-    font-size: 44px;
-    color: #DDD;
-    background: rgb(64,64,64); 
-    text-shadow: -1px 2px 0 #000;
-    letter-spacing: .05em;
-    font-weight: bolder;
-    box-shadow: 0 0 12px #000;
+    border-radius: 6px;
+    line-height: 3em;
+    background: rgb(64,64,64);
+    box-shadow: inset 0 0 8px #202020;
 }
 
 .login-notice > .link {
+    font-size: 44px;
     color:#006ec9;
-    text-decoration: underline;
 }
+
+.login-notice > .sub {
+    font-size: 24px;
+    color: #DDD;
+}
+
 /*#endregion*/
 
 /*#region Page Pool*/
@@ -280,14 +224,12 @@ body {
 .page-pool .controls .control .button {
     width: 100%;
     height: 38px;
-    border: solid 1px #000;
     border-radius: 20px;
     font-size: 32px;
     cursor: pointer;
+    color: #111;
     text-align: center;
-    box-shadow: inset 0 0 5px #FFF;
-    text-shadow: 0 0 2px rgba(255 255 255 / 50%);
-    background-color: #006ec9;
+    background-color: #f05e39;
 }
 
 .page-pool .controls .control .button.disabled {
@@ -334,8 +276,5 @@ body {
 }
 
 /*#endregion*/
-
-/*#region Page Specific*/
-
 
 /*#endregion*/
