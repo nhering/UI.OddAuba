@@ -3,7 +3,7 @@ class RestrictionPage extends PageBase {
       super("Restrict")
    }
 
-   get mainArea()
+   get element()
    {
       let n = document.createElement('div')
       n.classList.add('under-construction')

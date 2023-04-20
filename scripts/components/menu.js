@@ -16,6 +16,7 @@ class Menu {
       this.#items.forEach(i => {
          div.appendChild(this.menuItem(i))
       })
+      div.appendChild(this.signOut)
       return div
    }
 
@@ -38,6 +39,18 @@ class Menu {
       div.innerText = item
       return div
    }
+
+   get signOut()
+   {
+      let e = document.createElement('div')
+      e.classList.add('sign-out')
+      e.innerText = "Sign Out"
+      e.onclick = () => { 
+         funtilityApi.signOut()
+         window.location = `${window.location.pathname}?pg=home}`
+      }
+      return e
+   }
 }
 
 menuButton = () => {
@@ -48,12 +61,12 @@ menuButton = () => {
       if(m) {
          m.remove()
       } else {
-         let hdr = document.getElementById('header').offsetHeight
+         // let hdr = document.getElementById('header').offsetHeight
          let btn = document.getElementById('top-bar').offsetHeight
          let m = new Menu().element
-         m.style.top = hdr + btn
+         m.style.top = btn
          let bod = document.querySelector('body')
-         m.style.height = bod.offsetHeight - (hdr + btn)
+         m.style.height = bod.offsetHeight - btn
          bod.appendChild(m)
       }
    })

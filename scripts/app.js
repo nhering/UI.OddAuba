@@ -1,5 +1,8 @@
 class App {
-   constructor() { }
+   constructor() {
+      this.topBar
+      this.content = document.getElementById("content")
+    }
 
    async route() {
       let allowEntry = funtilityApi.userIsSignedIn
@@ -12,6 +15,7 @@ class App {
             window.location = `${window.location.pathname}?pg=settings`
          }
       } else {
+         // this.topBar = new TopBar("OddAuba")
          await this.loadPage('home')
       }
    }
@@ -31,8 +35,7 @@ class App {
 
    async loadPage(pg)
    {
-      let c = document.getElementById('content')
-      if (c) c.remove()
+      this.content.innerHTML = null
       
       state.currentPage = pg
       let src = './scripts/pages/home.js'
@@ -46,7 +49,8 @@ class App {
 
       await this.loadPageScript(src)
       .then(async (page) => {
-         document.body.appendChild(page.element)
+         this.topBar = new TopBar(page.pageName)
+         this.content.appendChild(page.element)
          page.load()
       })
       .catch((error) => {
@@ -74,46 +78,39 @@ class App {
    }
 }
 
-class PageBase {
+class TopBar {
    pageName = ""
    constructor(name) {
       this.pageName = name
       this.init()
-    }
+   }
 
-    init()
-    {
-      setTimeout(async () => {
-         let ticker = new Ticker()
-         await ticker.load()
-      },100)
-    }
-
-    get element()
-    {
-       let e = document.createElement('div')
-       e.setAttribute('id','content')
-       e.classList.add('page')
-       e.appendChild(this.topBar)
-       e.appendChild(this.mainArea)
-       return e
-    }
-
-   get topBar()
+   init()
    {
-      let e = document.createElement('div')
-      e.setAttribute('id','top-bar')
-      if(funtilityApi.userIsSignedIn) e.appendChild(menuButton())
-      e.appendChild(this.pageLabel)
-      e.appendChild(this.marketStatus)
-      e.appendChild(this.marketIndicator)
-      return e
+      let topBar = document.getElementById('top-bar')
+      if(funtilityApi.userIsSignedIn) topBar.appendChild(menuButton())
+      topBar.appendChild(this.pageLabel)
+      if (funtilityApi.userIsSignedIn)
+      {
+         topBar.appendChild(this.marketStatus)
+         topBar.appendChild(this.marketIndicator)
+         // topBar.appendChild(this.signOut)
+      } else {
+         topBar.appendChild(this.emptyItem)
+      }
+      
+     setTimeout(async () => {
+        let marketState = new MarketState()
+        let marketIndicator = new MarketIndicator()
+        await marketState.load()
+        await marketIndicator.load()
+     },0)
    }
    
    get pageLabel()
    {
       let e = document.createElement('div')
-      e.classList.add('page-lbl')
+      e.id = 'page-lbl'
       e.innerText = this.pageName;
       return e
    }
@@ -122,6 +119,7 @@ class PageBase {
    {
       let e = document.createElement('div')
       e.id = 'market-status'
+      e.classList.add('item')
       return e
    }
 
@@ -129,16 +127,45 @@ class PageBase {
    {
       let e = document.createElement('div')
       e.id = 'market-indicator'
+      e.classList.add('item')
       return e
    }
+
+   // get signOut()
+   // {
+   //    let e = document.createElement('div')
+   //    e.classList.add('item')
+   //    e.classList.add('sign-out')
+   //    e.innerText = "Sign Out"
+   //    e.onclick = () => { 
+   //       funtilityApi.signOut()
+   //       window.location = `${window.location.pathname}?pg=home}`
+   //    }
+   //    return e
+   // }
+
+   get emptyItem()
+   {
+      let e = document.createElement('div')
+      e.classList.add('item')
+      return e
+   }
+}
+
+class PageBase {
+   pageName = ""
+   constructor(name) {
+      this.pageName = name
+    }
 
    /**
     * Overrideable property for implementations of the PageBase class
     */
-   get mainArea() {
+    get element()
+    {
       let e = document.createElement('div')
       return e
-   }
+    }
 
    /**
     * Overrideable method for implementations of the Page class.

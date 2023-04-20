@@ -3,7 +3,7 @@ class SettingsPage extends PageBase {
       super("Settings")
    }
 
-   get mainArea()
+   get element()
    {
       let n = document.createElement('div')
       n.classList.add('under-construction')

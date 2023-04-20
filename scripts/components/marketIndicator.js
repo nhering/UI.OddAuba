@@ -2,9 +2,12 @@ class MarketIndicator {
    #loading = true
    #dateString = ""
    #close = 0
+   #low = 0
    #high = 0
    #last = 0
-   #intervalId = 0
+   #intervalIds = []
+   #progEle = null
+   #progressCounter = 0
    constructor() {
       this.init()
    }
@@ -14,13 +17,18 @@ class MarketIndicator {
       statusEle.innerHTML = null
       statusEle.appendChild(this.title)
       statusEle.appendChild(this.info)
+      if (state.marketState.isOpen) {
+         this.#progressCounter = 0
+         statusEle.appendChild(this.progressBar)
+         statusEle.title = this.titleText
+      }
    }
 
    get todayDateString()
    {
       let now = new Date(Date.now())
       let yyyy = now.getFullYear().toString()
-      let mmm = this.getMonthAbr(now.getMonth()-1)
+      let mmm = this.getMonthAbr(now.getMonth())
       let DD = now.getDate().toString().padStart(2,'0')
       return `${mmm} ${DD} ${yyyy}`
    }
@@ -34,10 +42,11 @@ class MarketIndicator {
    get title()
    {
       let ele = document.createElement('div')
-      ele.innerText = "QQQ:"
+      ele.innerText = "QQQ "
       if (!this.#loading) {
          let span = document.createElement('span')
          span.innerText = this.#dateString
+         span.style.fontSize = "14px"
          ele.appendChild(span)
       }
       return ele
@@ -47,87 +56,157 @@ class MarketIndicator {
    {
       let ele = document.createElement('div')
       if (!this.#loading) {
-         if (this.#close > 0) {
-            ele.appendChild(this.closing)
+         if (state.marketState.isOpen) {
+            ele.appendChild(this.last)
          } else {
-            ele.appendChild(this.current)
+            ele.appendChild(this.closing)
          }
       }
       return ele
    }
 
+   get titleText()
+   {
+      return `High: $${this.#high.toFixed(2)}
+Last: $${this.#last.toFixed(2)}
+Low: $${this.#low.toFixed(2)}`
+   }
+
    get closing()
    {
       let ele = document.createElement('div')
-      ele.innerText = "Closed at "
+      ele.innerText = "Close: "
       ele.appendChild(this.getDollarSpan(this.#close))
       return ele
    }
 
-   get current()
+   get last()
    {
       let ele = document.createElement('div')
-
-      let highSpan = document.createElement('span')
-      highSpan.innerText = "High"
-      highSpan.appendChild(this.getDollarSpan(this.#high))
-      ele.appendChild(highSpan)
-
-      let lastSpan = document.createElement('span')
-      lastSpan.innerText = "Last"
-      lastSpan.appendChild(this.getDollarSpan(this.#last))
-      ele.appendChild(lastSpan)
-      
-      percentSpan.innerText = "Gap"
-      percentSpan.appendChild(this.getPercentSpan(this.#high,this.#last))
-      ele.appendChild(percentSpan)
+      ele.innerText = "Last: "
+      ele.appendChild(this.getDollarSpan(this.#last))
+      ele.appendChild(this.infoIcon)
       return ele
+   }
+
+   get infoIcon()
+   {
+      let ele = document.createElement('span')
+      ele.innerText = "i"
+      ele.classList.add('info-icon')
+      return ele
+   }
+
+   // get current()
+   // {
+   //    let ele = document.createElement('div')
+
+   //    let highSpan = document.createElement('span')
+   //    highSpan.innerText = "High"
+   //    highSpan.appendChild(this.getDollarSpan(this.#high))
+   //    ele.appendChild(highSpan)
+
+   //    // let lastSpan = document.createElement('span')
+   //    // lastSpan.innerText = "Last"
+   //    // lastSpan.appendChild(this.getDollarSpan(this.#last))
+   //    // ele.appendChild(lastSpan)
+      
+   //    let percentSpan = document.createElement('span')
+   //    percentSpan.innerText = "Gap"
+   //    percentSpan.appendChild(this.getPercentSpan(this.#high,this.#last))
+   //    ele.appendChild(percentSpan)
+   //    return ele
+   // }
+
+   get progressBar()
+   {
+      if (this.#progEle == null) {
+         this.#progEle = document.createElement('div')
+         this.#progEle.classList.add('progress-bar-container')
+      } else {
+         this.#progEle.innerHTML = null
+      }
+      return this.#progEle
    }
 
    getDollarSpan(num)
    {
       let span = document.createElement('span')
       span.style.color = "#DDD"
-      span.innerText = `$${num}`
+      span.style.fontSize = "14px"
+      span.innerText = `$${num.toFixed(2)}`
       return span
    }
 
    getPercentSpan(high,last)
    {
-      if (high <= last) return "0%"
-      let dif = high - last
-      let pcnt = dif / high
-      return `${pcnt * 100}%`
+      let span = document.createElement('span')
+      if (high <= last) {
+         span.innerText = "0%"
+      } else {
+         let dif = high - last
+         let pcnt = ( dif / high ).toFixed(2)
+         span.innerText = `${pcnt * 100}%`  
+      }
+      return span
    }
 
-   async update() {
-      this.#seconds--
-      if (this.#seconds < 1) {
+   async updateMarketIndicator() {
+      if (state.marketState.isOpen) {
          await this.load()
       }
    }
 
+   updateProgressBar()
+   {
+      this.#progressCounter += 1000
+      this.#progEle.innerHTML = null
+      let progBar = document.createElement('div')
+      progBar.classList.add('progress-bar')
+      progBar.style.width = this.progressPercent
+      this.#progEle.appendChild(progBar)
+   }
+
+   get progressPercent()
+   {
+      let divisor = 60000
+      let dividend = divisor - this.#progressCounter
+      if ( dividend <= 0 ) return '100%'
+      let pct = ( 1 - ( dividend / divisor ) ).toFixed(2)
+      return `${pct.substring(2)}%`
+   }
+
    async load() {
-      await funtilityApi.GET("oddauba/marketstate")
+      this.#loading = true
+      await funtilityApi.GET("oddauba/marketindicator")
       .then((resp) => {
-         // console.log(resp)
-         var ms = resp.result
-         // this.#name = ms.name
-         // this.#code = ms.code
-         // this.#isOpen = ms.isOpen
-         // if (this.#isOpen)
-         // {
-         //    this.#seconds = ms.secondsTillClose
-         // } else {
-         //    this.#seconds = ms.secondsTillOpen
-         // }
-         // this.#refreshCountDown = 300
-         if (this.#intervalId != 0) {
-            clearInterval(this.#intervalId)
+         var mi = resp.result
+         this.#high = mi.high
+         this.#low = mi.low
+         this.#last = mi.last
+         this.#close = mi.close
+         if (state.marketState.isOpen) {
+            this.#dateString = this.todayDateString
+         } else {
+            this.#dateString = mi.closeDate
          }
-         this.#intervalId = setInterval(async () => {
-            await this.update()
-         },60000)
+         this.clearIntervals()
+         this.#intervalIds.push(setInterval(async () => {
+            await this.updateMarketIndicator()
+         },60000))
+         this.#intervalIds.push(setInterval(() => {
+            this.updateProgressBar()
+         },1000))
+         
+         this.#loading = false
+         this.init()
+      })
+   }
+
+   clearIntervals()
+   {
+      this.#intervalIds.forEach(i => {
+         clearInterval(i)
       })
    }
 }

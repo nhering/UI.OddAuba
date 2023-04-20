@@ -1,10 +1,6 @@
-class Ticker {
+class MarketState {
    #loading = true
-   #name = "NYSE"
-   #code = "XNYS"
-   #isOpen = false
    #seconds = 0
-   #refreshCountDown = 300
    #intervalId = 0
    constructor() {
       this.init()
@@ -20,15 +16,17 @@ class Ticker {
    get openOrClosed()
    {
       let ele = document.createElement('div')
-      ele.innerText = `${this.#name} `
+      ele.innerText = 'NYSE '
       if (!this.#loading) {
          let span = document.createElement('span')
-         if (this.#isOpen) {
+         if (state.marketState.isOpen) {
             span.innerText = "OPEN"
-            span.style.color = "#479c55"
+            span.style.color = "#004203"
+            span.style.fontSize = "14px"
          } else {
             span.innerText = "CLOSED"
-            span.style.color = "#ca3434"
+            span.style.color = "#980000"
+            span.style.fontSize = "14px"
          }
          ele.appendChild(span)
       }
@@ -38,7 +36,7 @@ class Ticker {
    get timer() {
       let ele = document.createElement('div')
       if (!this.#loading) {
-         if (this.#isOpen) {
+         if (state.marketState.isOpen) {
             ele.innerText = "Closes "
          } else {
             ele.innerText = "Opens "
@@ -51,6 +49,7 @@ class Ticker {
    get timerSpan() {
       let span = document.createElement('span')
       span.id = 'timer-span'
+      span.style.fontSize = "14px"
       let hh = `${this.countDownHours}`.padStart(2,"0")
       let mm = `${this.countDownMinutes}`.padStart(2,"0")
       let ss = `${this.countDownSeconds}`.padStart(2,"0")
@@ -78,19 +77,16 @@ class Ticker {
    }
 
    async update() {
-      this.#seconds--
-      this.#refreshCountDown--
-      if (this.shouldReload) {
+      const now = new Date(Date.now())
+      if (now > state.marketState.nextChange) {
          await this.load()
       } else {
+         let x = now.getTime()
+         let y = state.marketState.nextChange.getTime()
+         var flt = Math.abs(x - y)/1000
+         this.#seconds = Math.floor(flt)
          this.init()
       }
-   }
-
-   get shouldReload()
-   {
-      if (this.#seconds <= 0 || this.#refreshCountDown <= 0) return true
-      return false
    }
 
    async load() {
@@ -99,17 +95,7 @@ class Ticker {
       await funtilityApi.GET("oddauba/marketstate")
       .then((resp) => {
          this.#loading = false
-         var ms = resp.result
-         this.#name = ms.name
-         this.#code = ms.code
-         this.#isOpen = ms.isOpen
-         if (this.#isOpen)
-         {
-            this.#seconds = ms.secondsTillClose
-         } else {
-            this.#seconds = ms.secondsTillOpen
-         }
-         this.#refreshCountDown = 300
+         state.marketState = resp
          if (this.#intervalId != 0) {
             clearInterval(this.#intervalId)
          }

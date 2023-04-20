@@ -3,7 +3,7 @@ class TranchePage extends PageBase {
       super("Tranche")
    }
 
-   get mainArea()
+   get element()
    {
       let n = document.createElement('div')
       n.classList.add('under-construction')

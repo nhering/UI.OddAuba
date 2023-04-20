@@ -1,251 +1,288 @@
 class HomePage extends PageBase{
+   #signInPhase = 1
    constructor() {
-    super("OddAuba")
+      super("OddAuba")
     }
 
+    refresh()
+    {
+       let parentEle = document.getElementById('content')
+       parentEle.innerHTML = null
+       parentEle.appendChild(this.element)
+    }
 
-   get mainArea()
+   get element()
    {
       let e = document.createElement('div')
-      e.setAttribute('id','content')
-      e.classList.add('page')
-      e.appendChild(this.notice)
+      e.classList.add('page-home')
+      e.appendChild(this.signInContainer)
       return e
    }
 
-   get notice()
+   get signInContainer()
    {
-      let n = document.createElement('div')
-      n.classList.add('login-notice')
-      n.addEventListener('click', () => {
-         funtilityUi.showModal(funtilityUi.SignInContainer)
-      })
-      n.innerHTML = "<span class='link'>Sign In</span><br/><span class='sub'>Required</span>"
-      return n
+      let container = document.createElement('div')
+      container.classList.add('sign-in')
+      container.id = 'sign-in-process'
+      let fs = this.fieldSet
+      if (this.#signInPhase == 1) {
+         this.addEnterEmailComponents(fs)
+      } else {
+         this.addEnterCodeComponents(fs)
+      }
+      fs.appendChild(this.validation)
+      container.appendChild(fs)
+      return container
+   }   
+
+   get fieldSet()
+   {
+      let fieldset = document.createElement('fieldset')
+
+      let legend = document.createElement('legend')
+      legend.innerText = "Sign in to OddAuba"
+      fieldset.appendChild(legend)
+
+      return fieldset
    }
+
+   get validation()
+   {
+      let ele = document.createElement('div')
+      ele.id = 'validation'
+      return ele
+   }
+
+   //#region Enter Email
+
+   addEnterEmailComponents(container)
+   {
+      container.appendChild(this.emailMessage)
+      container.appendChild(this.emailInput)
+      container.appendChild(this.emailButton)
+   }
+
+   get emailMessage()
+   {
+      let ele = document.createElement('div')
+      ele.classList.add('msg')
+      ele.innerText = "Enter the email to send the code to."
+      return ele
+   }
+
+   get emailInput()
+   {
+      let input = document.createElement('input')
+      input.id = "email"
+      input.type = 'text'
+      input.placeholder = "Email"
+      input.setAttribute('name', 'emailInput')
+      if (state.lastLoginEmail !== "undefined")
+      {
+         input.value = state.lastLoginEmail
+      }
+      input.onkeyup = (event) => { 
+         if (event.key == 'Enter') this.requestSignInCode()
+      }
+      return input
+   }
+
+   get emailButton()
+   {
+      let label = document.createElement('label')
+      label.setAttribute('for', 'emailInput')
+      label.innerText = "Send"
+      label.onclick = () => {
+         this.requestSignInCode()
+      }
+      return label
+   }
+
+   requestSignInCode()
+   {
+       let form = this.emailForm
+       if (form.isValid)
+       {
+           loader.show(500)
+           funtilityApi.GET_LoginCode(form.email)
+           .then((res) => {
+               if(res.errors.length > 0) {
+                   res.errors.forEach((err) => {
+                       this.showMessage('validation', err, 10000)
+                   })
+                   loader.error('Error Sending Code')
+               } else {
+                  state.lastLoginEmail = form.email
+                  this.#signInPhase = 2
+                  loader.hide()
+                  this.refresh()
+               }
+           })
+       }
+   }
+
+  get emailForm()
+  {
+     let email = this.getInputValue('email')
+
+     let isValid = () => {
+        let result = true
+        if (email == "") {
+            result = false
+            this.showMessage('validation', 'Email Is Required')
+        } else if (!this.isValidEmail(email)) {
+           result = false
+           this.showMessage('validation', 'Invalid Email')
+        }
+        return result
+     }
+
+     return {
+        'email': email,
+        'isValid': isValid()
+     }
+  }
+
+   //#endregion
+
+   //#region Enter Code
+
+   addEnterCodeComponents(container)
+   {
+      container.appendChild(this.codeMessage)
+      container.appendChild(this.codeInput)
+      container.appendChild(this.codeButton)
+   }
+
+   get codeMessage()
+   {
+      let ele = document.createElement('div')
+      ele.classList.add('msg')
+      ele.innerText = "Enter the code we emailed to you."
+      return ele
+   }
+
+   get codeInput()
+   {
+      let input = document.createElement('input')
+      input.id = "code"
+      input.type = 'text'
+      input.placeholder = "Code"
+      input.setAttribute('name', 'codeInput')
+      input.onkeyup = (event) => { 
+         if (event.key == 'Enter') this.submitSignInCode()
+      }
+      return input
+   }
+
+   get codeButton()
+   {
+      let label = document.createElement('label')
+      label.setAttribute('for', 'codeInput')
+      label.innerText = "Submit"
+      label.onclick = () => {
+         this.submitSignInCode()
+      }
+      return label
+   }
+
+   submitSignInCode()
+   {
+       let form = this.codeForm
+       if (form.isValid)
+       {
+           loader.show(500)
+           funtilityApi.GET_Authentication(form.code)
+           .then((res) => {
+               if(res.errors.length > 0) {
+                   res.errors.forEach((err) => {
+                       this.showMessage('validation', err, 10000)
+                   })
+                   loader.error('Error Sending Code')
+               } else {
+                   loader.hide()
+                   window.location = `${window.location.pathname}?pg=${state.currentPage}`
+               }
+           })
+       }
+   }
+
+  get codeForm()
+  {
+     let code = this.getInputValue('code')
+
+     let isValid = () => {
+        let result = true
+        if (code == "") {
+            result = false
+            this.showMessage('validation', 'Code Is Required')
+        } else if (!this.isValidCode(code)) {
+           result = false
+           this.showMessage('validation', 'Code Email')
+        }
+        return result
+     }
+
+     return {
+        'code': code,
+        'isValid': isValid()
+     }
+  }
+
+   //#endregion
+
+   //TODO Move to utilities
+   getInputValue(id)
+   {
+       let inputElement = document.getElementById(id)
+       if (inputElement == 'undefined') return null
+       return inputElement.value
+   }
+
+   isValidEmail(email)
+   {
+       return String(email)
+           .toLowerCase()
+           .match(
+               /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+             ) !== null
+   }
+
+   isValidCode(code)
+   {
+       let result = true
+       if (code.length !== 4) {
+           result = false
+       } else {
+           for(let i=0; i < code.length; i++)
+           {
+               let parsed = parseInt(code[i])
+               if (isNaN(parsed)) result = false
+           }
+       }
+       return result
+   }
+
+   //TODO Move to utilities
+   /**
+    * Creates a div element and appends it as a child of the element with the targetId.
+    * @param {string} targetId The id of the element where the message will be appended as a child element.
+    * @param {string} message The message to display.
+    * @param {number} timeout The duration in milliseconds to display the message.
+    */
+    showMessage(targetId, message, timeout = 2000)
+    {
+        let parent = document.getElementById(targetId)
+        parent.innerHTML = null
+        let ele = document.createElement('div')
+        ele.innerText = message
+        setTimeout(() => { ele.remove() }, timeout)
+        parent.appendChild(ele)
+    }
 
    load()
    {
-        new BackgroundAnimation()
-   }
-}
-
-class BackgroundAnimation {
-   constructor() {
-       this.targetId = 'content';
-       this.targetElement = document.getElementById(this.targetId);
-       this.canvas = document.createElement('canvas');
-       this.canvas.setAttribute('id','animCanvas');
-       this.targetElement.appendChild(this.canvas);
-       
-       // Customizable properties
-       this.backgroundColor =  "rgb(120,120,120)";
-       this.hexagonStyle = { radius: 30, gap: -2, red: 200, green: 200, blue: 200, alpha: 1};
-       this.affectorCount = { max: 3, min: 1 };
-       this.affectorRadiusPercent = { max: 1, min: .5 };
-       this.affectorSpeedRange = { max: 20, min: 10 };
-       this.affectorMaxAffect = { radius: 0, alpha: -.2 };
-       
-       // Non-customizable properties.
-       this.hexagonArray = [];
-       this.affectorArray = [];
-       this.affectorRadiusRange = { max: 1, min: .9 };
-       
-       // Hook into the resize event of the window.
-       let obj = this;
-       window.addEventListener('resize', obj.resizeCanvas());
-       // Set up the initial drawing of the animation
-       this.resizeCanvas();
-       // Begin the animation cycle.
-       this.intervalId = setInterval(function() { obj.drawBackground() }, 75);
-   }
-
-   resizeCanvas() {
-       this.targetElement = document.getElementById(this.targetId);
-       this.canvasWidth = this.targetElement.clientWidth;
-       this.canvasHeight = this.targetElement.clientHeight;
-       this.canvas = document.getElementById("animCanvas");
-       this.ctx = this.canvas.getContext('2d');
-       this.canvas.setAttribute('width', this.canvasWidth);
-       this.canvas.setAttribute('height', this.canvasHeight);
-       if (this.canvasHeight < this.canvasWidth) {
-           this.affectorRadiusRange.max = this.canvasHeight * this.affectorRadiusPercent.max;
-           this.affectorRadiusRange.min = this.canvasHeight * this.affectorRadiusPercent.min;
-       } else {
-           this.affectorRadiusRange.max = this.canvasWidth * this.affectorRadiusPercent.max;
-           this.affectorRadiusRange.min = this.canvasWidth * this.affectorRadiusPercent.min;
-       }
-       this.newHexagonPositionArray();
-       this.drawHexagonArray();
-   }
-
-   newHexagonPositionArray() {
-       var newArray = [];
-       var transformX = this.hexagonStyle.radius * 1.76 + this.hexagonStyle.gap;
-       var transformY = this.hexagonStyle.radius * 1.52106 + this.hexagonStyle.gap;
-       var rows = (this.canvasHeight / transformY).toFixed(); rows++;
-       var cols = (this.canvasWidth / transformX).toFixed(); cols++;
-       var originX = 0;
-       var originY = this.hexagonStyle.radius * .25;
-       var oddRowOffset = transformX / 2;
-
-       var x = originX;
-       var y = originY;
-       for (var row = 1; row <= rows; row++) {
-           if (row % 2 !== 0) {
-               x -= oddRowOffset;
-               for (var oddCol = 1; oddCol <= cols + 1; oddCol++) {
-                   newArray.push({ x: x, y: y });
-                   x += transformX;
-               }
-           } else {
-               for (var evenCol = 1; evenCol <= cols; evenCol++) {
-                   newArray.push({ x: x, y: y });
-                   x += transformX;
-               }
-           }
-           x = originX;
-           y += transformY;
-       }
-
-       this.hexagonArray = newArray;
-   }
-
-   drawBackground() {
-       this.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
-       this.ctx.fillStyle = this.backgroundColor;
-       this.ctx.fillRect(0, 0, this.canvasWidth, this.canvasHeight);
-       this.drawHexagonArray();
-       this.deleteEscapedAffectors();
-       this.updateAffectorArray();
-   }
-
-   drawHexagonArray() {
-       var hexagonCount = this.hexagonArray.length;
-       var affectorCount = this.affectorArray.length;
-       var hexagon = { xPos: 0, yPos: 0, radius: 0, alpha: 0 };
-       for (var hex = 0; hex < hexagonCount; hex++) {
-           hexagon.xPos = this.hexagonArray[hex].x;
-           hexagon.yPos = this.hexagonArray[hex].y;
-           hexagon.radius = this.hexagonStyle.radius;
-           hexagon.alpha = this.hexagonStyle.alpha;
-           hexagon = this.affectHexagon(hexagon, affectorCount);
-           this.drawHexagon(hexagon.xPos, hexagon.yPos, hexagon.radius, hexagon.alpha);
-       }
-   }
-
-   updateAffectorArray() {
-       if (this.affectorArray.length < this.affectorCount.max || this.affectorArray.length < this.affectorCount.min) {
-           this.affectorArray.push(this.newAffector());
-       }
-
-       for (let i = 0; i < this.affectorArray.length; i++) {
-           this.updateAffector(this.affectorArray[i], i);
-       }
-   }
-
-   updateAffector(affector) {
-       affector.xPos -= affector.xVel;
-       affector.yPos -= affector.yVel;
-   }
-
-   drawHexagon(x, y, r, a) {
-       this.ctx.lineWidth = 18;
-       this.ctx.fillStyle = 'rgba(' + this.hexagonStyle.red + ', ' + this.hexagonStyle.green + ', ' + this.hexagonStyle.blue + ', ' + a + ')';
-       this.ctx.beginPath();
-       this.ctx.moveTo(x, y - r);                   //top
-       this.ctx.lineTo(x + r * .866, y - r * .5);   //upper right
-       this.ctx.lineTo(x + r * .866, y + r * .5);   //lower right
-       this.ctx.lineTo(x, y + r);                   //bottom
-       this.ctx.lineTo(x - r * .866, y + r * .5);   //lower left
-       this.ctx.lineTo(x - r * .866, y - r * .5);   //upper left
-       this.ctx.lineTo(x, y - r);                   //top
-       this.ctx.fill();
-   }
-
-   affectHexagon(hexagon, affectorCount) {
-       var radiusAffect = 1;
-       var alphaAffect = 1;
-       var distance;
-       var a;
-       var b;
-       var percent = 0;
-       for (let i = 0; i < affectorCount; i++) {
-           a = hexagon.xPos - this.affectorArray[i].xPos;
-           b = hexagon.yPos - this.affectorArray[i].yPos;
-           distance = Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2));
-           if (distance < this.affectorArray[i].radius) {
-               percent = (this.affectorArray[i].radius - distance) / this.affectorArray[i].radius;
-               radiusAffect -= percent * (this.affectorMaxAffect.radius * percent);
-               alphaAffect += percent * (this.affectorMaxAffect.alpha * percent);
-           }
-       }
-       hexagon.radius = hexagon.radius * radiusAffect;
-       hexagon.alpha = hexagon.alpha * alphaAffect;
-       if (hexagon.radius < 0) {
-           hexagon.radius = 0;
-       }
-       return hexagon;
-   }
-
-   newAffector() {
-       var radius = Math.round(Math.random() * (this.affectorRadiusRange.max - this.affectorRadiusRange.min) + this.affectorRadiusRange.min);
-       var startX;
-       var startY;
-       var endX;
-       var endY;
-       var xVel;
-       var yVel;
-       var radians;
-       var speed = Math.random() * (this.affectorSpeedRange.max - this.affectorSpeedRange.min) + this.affectorSpeedRange.min;
-
-       if (Date.now() % 2 === 0) {
-           // Choose left or right of canvas
-           startX = Math.floor(Math.random() * Math.floor(2)) === 0
-               ? radius * -1
-               : radius + this.canvasWidth;
-           // Choose vertical starting point
-           startY = Math.random() * this.canvasHeight;
-
-           endX = startX < 0 ? this.canvasWidth : 0;
-           endY = Math.random() * this.canvasHeight;
-
-           radians = Math.atan2(startX - endX, startY - endY);
-           xVel = speed * Math.sin(radians);
-           yVel = speed * Math.cos(radians);
-       } else {
-           // Choose top or bottom of canvas
-           startY = Math.floor(Math.random() * Math.floor(2)) === 0
-               ? radius * -1
-               : radius + this.canvasHeight;
-           // Choose horizontal starting point
-           startX = Math.random() * this.canvasWidth;
-
-           endY = startY < 0 ? this.canvasHeight : 0;
-           endX = Math.random() * this.canvasWidth;
-           radians = Math.atan2(startX - endX, startY - endY);
-           xVel = speed * Math.sin(radians);
-           yVel = speed * Math.cos(radians);
-       }
-
-       return { xPos: startX, yPos: startY, xVel: xVel, yVel: yVel, radius: radius };
-   }
-
-   deleteEscapedAffectors() {
-       var affCount = this.affectorArray.length;
-       var affector = {};
-
-       for (let i = 0; i < affCount; i++) {
-           affector = this.affectorArray[i];
-           if (affector.xPos < 0 - affector.radius ||
-               affector.xPos > this.canvasWidth + affector.radius ||
-               affector.yPos < 0 - affector.radius ||
-               affector.yPos > this.canvasHeight + affector.radius) {
-               this.affectorArray.splice(i, 1);
-               affCount = this.affectorArray.length;
-               i--;
-           }
-       }
+      
    }
 }
 

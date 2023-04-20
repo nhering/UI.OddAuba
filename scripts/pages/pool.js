@@ -3,7 +3,7 @@ class PoolPage extends PageBase {
       super("Pool")
    }
 
-   get mainArea()
+   get element()
    {
       let e = document.createElement('div')
       e.classList.add('page-pool')
@@ -124,10 +124,7 @@ class PoolPage extends PageBase {
 
    get symbolList()
    {
-      let h = document.querySelector('body').offsetHeight
-      h -= document.getElementById('header').offsetHeight
-      h -= 120
-
+      let h = document.querySelector('body').offsetHeight - 120
       let e = document.createElement('div')
       e.style.height = h
       e.classList.add('list')
