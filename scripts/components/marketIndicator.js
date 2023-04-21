@@ -97,27 +97,6 @@ Low: $${this.#low.toFixed(2)}`
       return ele
    }
 
-   // get current()
-   // {
-   //    let ele = document.createElement('div')
-
-   //    let highSpan = document.createElement('span')
-   //    highSpan.innerText = "High"
-   //    highSpan.appendChild(this.getDollarSpan(this.#high))
-   //    ele.appendChild(highSpan)
-
-   //    // let lastSpan = document.createElement('span')
-   //    // lastSpan.innerText = "Last"
-   //    // lastSpan.appendChild(this.getDollarSpan(this.#last))
-   //    // ele.appendChild(lastSpan)
-      
-   //    let percentSpan = document.createElement('span')
-   //    percentSpan.innerText = "Gap"
-   //    percentSpan.appendChild(this.getPercentSpan(this.#high,this.#last))
-   //    ele.appendChild(percentSpan)
-   //    return ele
-   // }
-
    get progressBar()
    {
       if (this.#progEle == null) {
@@ -160,11 +139,11 @@ Low: $${this.#low.toFixed(2)}`
    updateProgressBar()
    {
       this.#progressCounter += 1000
-      this.#progEle.innerHTML = null
+      this.progressBar.innerHTML = null
       let progBar = document.createElement('div')
       progBar.classList.add('progress-bar')
       progBar.style.width = this.progressPercent
-      this.#progEle.appendChild(progBar)
+      this.progressBar.appendChild(progBar)
    }
 
    get progressPercent()
