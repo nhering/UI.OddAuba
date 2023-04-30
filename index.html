@@ -14,8 +14,7 @@
         <script src="./scripts/components/marketState.js"></script>
         <script src="./scripts/components/marketIndicator.js"></script>
         
-        <!--Add the next links for the Funtility functionality.-->
-        <script src="https://funtility.github.io/funtility-js-plugin/carte.js"></script>
+        <!--Funtility auth-->
         <script src="https://funtility.github.io/funtility-js-plugin/funtility-api.js"></script>
     </head>
     <body>
@@ -23,7 +22,7 @@
         <div id="content"></div>
     </body>
     <script>        
-        let state, funtilityApi, funtilityUi, app
+        let state, funtilityApi, app
         window.onload = async () => {
             state = new State("OddAuba:Portal")
             funtilityApi = window.location.host ? new FuntilityAPI("OddAuba") : new FuntilityAPI("OddAuba",'http://localhost:5194/')
