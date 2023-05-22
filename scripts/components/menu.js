@@ -4,10 +4,11 @@
 class Menu {
    constructor() {}
    #items = [
-      "Restrict",
-      "Tranche",
+      "Advisor",
       "Pool",
-      "Settings"]
+      "Restrict",
+      "Settings",
+      "Tranche"]
 
    get element()
    {

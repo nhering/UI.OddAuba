@@ -6,7 +6,7 @@ class App {
 
    async route() {
       let allowEntry = funtilityApi.userIsSignedIn
-      //allowEntry = true //for develop purposes, comment for production
+      // allowEntry = true //for develop purposes, comment for production
       if (allowEntry) {
          const params = this.queryParams
          if (params.pg && params.pg != 'home') {
@@ -41,6 +41,7 @@ class App {
       let src = './scripts/pages/home.js'
 
       if      (pg === 'home')       { src = './scripts/pages/home.js' }
+      else if (pg === 'advisor')    { src = './scripts/pages/advisor.js?v=0' } 
       else if (pg === 'pool')       { src = './scripts/pages/pool.js' } 
       else if (pg === 'restrict')   { src = './scripts/pages/restrict.js' } 
       else if (pg === 'settings')   { src = './scripts/pages/settings.js' } 
@@ -94,7 +95,6 @@ class TopBar {
       {
          topBar.appendChild(this.marketStatus)
          topBar.appendChild(this.marketIndicator)
-         // topBar.appendChild(this.signOut)
       } else {
          topBar.appendChild(this.emptyItem)
       }
@@ -130,19 +130,6 @@ class TopBar {
       e.classList.add('item')
       return e
    }
-
-   // get signOut()
-   // {
-   //    let e = document.createElement('div')
-   //    e.classList.add('item')
-   //    e.classList.add('sign-out')
-   //    e.innerText = "Sign Out"
-   //    e.onclick = () => { 
-   //       funtilityApi.signOut()
-   //       window.location = `${window.location.pathname}?pg=home}`
-   //    }
-   //    return e
-   // }
 
    get emptyItem()
    {

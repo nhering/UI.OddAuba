@@ -6,9 +6,13 @@ class PoolPage extends PageBase {
    get element()
    {
       let e = document.createElement('div')
-      e.classList.add('page-pool')
-      e.appendChild(this.controls)
-      e.appendChild(this.symbolList)
+      e.classList.add('under-construction')
+      e.innerText = "Under Construction"
+
+      // let e = document.createElement('div')
+      // e.classList.add('page-pool')
+      // e.appendChild(this.controls)
+      // e.appendChild(this.symbolList)
       return e
    }
 
@@ -221,12 +225,12 @@ class PoolPage extends PageBase {
    }
 
    async load() {
-      loader.show()
-      Promise.all([this.loadSymbolsFile(),this.GET_pool()])
-      .then(()=>{
-         this.populateList()
-         loader.hide()
-      })
+      // loader.show()
+      // Promise.all([this.loadSymbolsFile(),this.GET_pool()])
+      // .then(()=>{
+      //    this.populateList()
+      //    loader.hide()
+      // })
    }
 
    async loadSymbolsFile()

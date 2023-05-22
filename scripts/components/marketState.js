@@ -21,11 +21,11 @@ class MarketState {
          let span = document.createElement('span')
          if (state.marketState.isOpen) {
             span.innerText = "OPEN"
-            span.style.color = "#004203"
+            span.style.color = "#50c156"
             span.style.fontSize = "14px"
          } else {
             span.innerText = "CLOSED"
-            span.style.color = "#980000"
+            span.style.color = "#ff2525"
             span.style.fontSize = "14px"
          }
          ele.appendChild(span)

@@ -10,6 +10,12 @@ class TranchePage extends PageBase {
       n.innerText = "Under Construction"
       return n
    }
+
+   // Tranche Selector
+
+   // Snapshot Section
+
+   // Advice Section
 }
 
 page = new TranchePage()

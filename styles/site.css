@@ -25,13 +25,13 @@ body {
     width: 100%;
     height: 60px;
     box-shadow: 0 2px 30px #777;
-    border-bottom: solid 1px #464646;
+    background-color: rgb(65, 65, 65);
 }
 
 #top-bar .item {
     padding: 12px 0 0 12px;
     margin-left: 20px;
-    border-left: solid 1px #464646;
+    border-left: solid 1px #929292;
     min-width: 120px;
 }
 
@@ -39,9 +39,8 @@ body {
     font-size: 42px;
     padding: 6px 0 0 12px;
     color: #FFF;
-    
     margin-left: 12px;
-    border-left: solid 1px #464646;
+    border-left: solid 1px #929292;
     min-width: 120px;
 }
 
@@ -94,15 +93,16 @@ body {
 }
 
 #menu {
+    margin-top: -1px;
     position: absolute;
-    background-color: rgb(100 100 100);
+    background-color: rgb(65, 65, 65);
     color: #CCC;
-    border-right: solid 1px #464646;
+    border-top: dotted 1px #929292;
 }
 
 .menu-item {
     cursor: pointer;
-    border-bottom: dotted 1px black;
+    border-bottom: dotted 1px #929292;
     font-size: 24px;
     padding: 10px;
 }
@@ -354,6 +354,234 @@ body {
     width: 60px;
     margin-left: 8px;
 }
+
+/*#endregion*/
+
+/*#region Page Advisor*/
+
+@media(max-width:800px)
+{
+    .page-advisor {
+        width: 100%;
+    }
+}
+
+@media(min-width:801px) and (max-width:1280px)
+{
+    .page-advisor {
+        width: 75%
+    }
+}
+
+@media(min-width:1281px)
+{
+    .page-advisor {
+        width: 75%;
+        /* overflow-x: hidden; */
+    }
+}
+
+.page-advisor {
+    display: grid;
+    grid-template-areas: 'controls controls' 'snapshots advice';
+    grid-template-rows: 50px 1fr;
+    grid-template-columns: 1fr 1fr;
+    /* overflow-y: hidden; */
+    margin: auto;
+    background-color: #DDD;
+}
+
+/*#region Controls*/
+
+.page-advisor .controls {
+    grid-area: controls;
+    display: inline-flex;
+    padding: 10px;
+    /* width: 100% */
+}
+
+.page-advisor .controls .nav {
+    margin-left: 10px;
+    padding-left: 10px;
+    background-color: #fff;
+    border-radius: 3px;
+    border: solid 1px #4d4d4d99;
+    display: inline-flex;
+}
+
+.page-advisor .controls .btn {
+    width: 50px;
+    text-align: center;
+    line-height: 1.7em;
+    margin: 0 0 0 5px;
+    font-weight: 700;
+    background: linear-gradient(#fff 60%,#eee 10%);
+    border-left: solid 1px #a0a0a099;
+    border-right: solid 1px #a0a0a099;
+    border-radius: 3px;
+    padding: 0 2px;
+    cursor: pointer;
+}
+
+.page-advisor .controls .lbl {
+    line-height: 1.9em;
+}
+
+.page-advisor .controls .btn.disabled {
+    cursor: default;
+}
+
+.page-advisor .controls .chev {
+    font-size: 35px;
+    color: rgb(230, 230, 230);
+    text-shadow: 0 1px 0 rgb(175, 175, 175);
+}
+
+.page-advisor .controls .txt {
+    position: relative;
+    top: -27px;
+    font-size: 10px;
+    z-index: 2;
+}
+
+.page-advisor .controls .btn.disabled .txt  {
+    color: rgb(255, 255, 255);
+    text-shadow: 0 0 3px rgb(0, 0, 0);
+}
+
+/*#endregion*/
+
+/*#region Snapshots*/
+
+.page-advisor .snapshots {
+    grid-area: snapshots;
+    display: grid;
+    grid-template-areas: 'header' 'list';
+    grid-template-rows: 40px 1fr;
+    padding: 0 10px
+    /* width: 50%; */
+}
+
+.page-advisor .snapshots .header {
+    grid-area: header;
+    display: grid;
+    text-align: center;
+    grid-template-columns: 60px 120px 120px 120px 15px;
+    border-bottom: solid 1px black;
+}
+
+.page-advisor .snapshots .header .col {
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
+
+.page-advisor .snapshots .header .col div {
+    border-radius: 5px;
+    background-color: #f5f5f5;
+    margin: 0 2px;
+    padding: 2px 0;
+    font-size: 12px;
+}
+
+/* .page-advisor .snapshots .header .col:nth-child(even) {
+    background-color: rgba(0,0,255,.3);
+} */
+
+.page-advisor .snapshots .list {
+    grid-area: list;
+    /* display: grid;
+    grid-template-columns: 100px 1fr 1fr 1fr 15px;
+    border-bottom: solid 1px black; */
+}
+
+.page-advisor .snapshots .list .item {
+    display: grid;
+    padding: 2px 0;
+    grid-template-columns: 60px 120px 120px 120px 15px;
+    border-bottom: dotted 1px rgb(216, 216, 216);
+}
+
+.page-advisor .snapshots .list .item:nth-child(even) {
+    background-color: #f5f5f5;
+}
+
+.page-advisor .snapshots .list .item .symbol {
+    text-align: left;
+    padding-left: 10px;
+}
+
+.page-advisor .snapshots .list .item .price {
+    text-align: right;
+    padding-right: 10px;
+}
+
+/*#endregion*/
+
+/*#region Advice*/
+
+.page-advisor .advice {
+    grid-area: advice;
+    display: grid;
+    grid-template-areas: 'header' 'list';
+    grid-template-rows: 40px 1fr;
+    padding: 0 10px
+}
+
+.page-advisor .advice .header {
+    grid-area: header;
+    display: grid;
+    text-align: center;
+    grid-template-columns: 100px 100px 100px;
+    border-bottom: solid 1px black;
+}
+
+.page-advisor .advice .header .col {
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
+
+.page-advisor .advice .header .col div {
+    border-radius: 5px;
+    background-color: #f5f5f5;
+    margin: 0 2px;
+    padding: 2px 0;
+    font-size: 12px;
+}
+
+.page-advisor .advice .list {
+    grid-area: list;
+    /* display: grid;
+    grid-template-columns: 100px 1fr 1fr 1fr 15px;
+    border-bottom: solid 1px black; */
+}
+
+.page-advisor .advice .list .item {
+    display: grid;
+    padding: 2px 0;
+    grid-template-columns: 100px 100px 100px;
+    border-bottom: dotted 1px rgb(216, 216, 216);
+}
+
+.page-advisor .advice .list .item:nth-child(odd) {
+    background-color: #f5f5f5;
+}
+
+.page-advisor .advice .list .item .symbol {
+    text-align: left;
+    padding-left: 10px;
+}
+
+.page-advisor .advice .list .item .rank {
+    text-align: center;
+    padding-right: 10px;
+}
+
+.page-advisor .advice .list .item .diff {
+    text-align: right;
+    padding-right: 10px;
+}
+
+/*#endregion*/
 
 /*#endregion*/
 
