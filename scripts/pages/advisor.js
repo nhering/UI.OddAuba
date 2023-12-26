@@ -140,6 +140,9 @@ class TranchePage extends PageBase {
       {
          if (!event.target.parentElement.classList.contains('disabled'))
          {
+            console.log("## navPrev ##")
+            console.log(JSON.stringify(this.#navData))
+            console.log("## navPrev ##")
             this.#navData.selected = this.#navData.prev
             this.GET_adviceData()
          }
@@ -252,7 +255,7 @@ class TranchePage extends PageBase {
       cur.innerText = 'Current'
       let curDate = document.createElement('div')
       curDate.id = 'cur-date'
-      curDate.innerText = '----------------'
+      curDate.innerText = '- - - - - - - - - - -'
       cur.appendChild(curDate)
       e.appendChild(cur)
 
@@ -261,7 +264,7 @@ class TranchePage extends PageBase {
       ref.innerText = 'Reference'
       let refDate = document.createElement('div')
       refDate.id = 'ref-date'
-      refDate.innerText = '----------------'
+      refDate.innerText = '- - - - - - - - - - -'
       ref.appendChild(refDate)
       e.appendChild(ref)
 
@@ -270,9 +273,14 @@ class TranchePage extends PageBase {
       pur.innerText = 'Purchase'
       let purDate = document.createElement('div')
       purDate.id = 'pur-date'
-      purDate.innerText = '----------------'
+      purDate.innerText = '- - - - - - - - - - -'
       pur.appendChild(purDate)
       e.appendChild(pur)
+
+      let owned = document.createElement('div')
+      owned.classList.add('col')
+      owned.innerText = 'Days Owned'
+      e.appendChild(owned)
 
       let scrollSpacer = document.createElement('div')
       e.appendChild(scrollSpacer)
@@ -334,6 +342,11 @@ class TranchePage extends PageBase {
       pur.classList.add('price')
       pur.innerText = data.pur
       item.appendChild(pur)
+
+      let owned = document.createElement('div')
+      owned.classList.add('price')
+      owned.innerText = data.daysOwned
+      item.appendChild(owned)
       
       return item
    }
@@ -364,10 +377,15 @@ class TranchePage extends PageBase {
       let e = document.createElement('div')
       e.classList.add('header')
 
-      let sym = document.createElement('div')
-      sym.classList.add('col')
-      sym.id = 'owned-symbol'
-      e.appendChild(sym)
+      let symHdr = document.createElement('div')
+      symHdr.classList.add('col')
+      symHdr.innerText = 'Symbol'
+      symHdr.id = 'owned-symbol'
+      let symShares = document.createElement('div')
+      symShares.id = 'sym-shares'
+      symShares.innerText = "- - -"
+      symHdr.appendChild(symShares)
+      e.appendChild(symHdr)
 
       let rankHdr = document.createElement('div')
       rankHdr.classList.add('col')
@@ -482,8 +500,10 @@ class TranchePage extends PageBase {
       await funtilityApi.GET("oddauba/advisor/adviceView",params)
       .then((resp) => {
          document.querySelectorAll(".list .item").forEach(i => i.remove())
-         console.log(resp.result)
          const view = resp.result
+         console.log(view)
+
+         this.#navData.selected = view.advice.dateTime
          
          this.#navData.prev = view.prevDateTime
          if(view.prevDateTime != null) {
@@ -515,11 +535,16 @@ class TranchePage extends PageBase {
          let sList = document.querySelector('.snapshots .list')
          let symbols = Object.getOwnPropertyNames(curPrices)
          symbols.forEach(s => {
+            let daysOwned = "?"
+            if (view.nextDateTime == null) {
+               daysOwned = view.daysOwned.hasOwnProperty(s) ? view.daysOwned[s] : "-"
+            }
             let item = {
                'sym':s,
                'cur':this.formatPrice(curPrices[s]),
                'ref':this.formatPrice(refPrices[s]),
-               'pur':this.formatPrice(purPrices[s])
+               'pur':this.formatPrice(purPrices[s]),
+               'daysOwned':daysOwned
             }
             sList.appendChild(this.createSnapshotListItem(item))
          })

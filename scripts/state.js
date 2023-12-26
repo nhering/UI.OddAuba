@@ -96,7 +96,8 @@ class State {
 
    load() {
       let local = localStorage.getItem(this.#name)
-      if (local == null)
+      console.log(local)
+      if (!local)
       {
          this.#lastLoginEmail = ""
          this.#currentPage = "Home"
@@ -105,11 +106,11 @@ class State {
       }
       else
       {
-         local = JSON.parse(local)
+         // local = JSON.parse(local)
          this.#lastLoginEmail = local.lastLoginEmail ? local.lastLoginEmail : ""
-         this.#currentPage = local.currentPage
-         this.#currentUserEmail = local.currentUserEmail
-         this.#poolListParams = local.poolListParams
+         this.#currentPage = local.currentPage ? "undefined" : ""
+         this.#currentUserEmail = local.currentUserEmail ? "undefined" : ""
+         this.#poolListParams = local.poolListParams ? undefined : { sort:"", search:"" }
       }
       this.save()
    }

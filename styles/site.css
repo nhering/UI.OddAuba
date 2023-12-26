@@ -466,7 +466,7 @@ body {
     grid-area: header;
     display: grid;
     text-align: center;
-    grid-template-columns: 60px 120px 120px 120px 15px;
+    grid-template-columns: 60px 120px 120px 120px 75px;
     border-bottom: solid 1px black;
 }
 
@@ -497,7 +497,7 @@ body {
 .page-advisor .snapshots .list .item {
     display: grid;
     padding: 2px 0;
-    grid-template-columns: 60px 120px 120px 120px 15px;
+    grid-template-columns: 60px 120px 120px 120px 75px;
     border-bottom: dotted 1px rgb(216, 216, 216);
 }
 
